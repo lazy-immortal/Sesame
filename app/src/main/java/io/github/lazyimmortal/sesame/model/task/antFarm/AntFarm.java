@@ -44,6 +44,7 @@ public class AntFarm extends ModelTask {
         bizKeyList.add("YEB_PURCHASE");
         bizKeyList.add("WIDGET_addzujian");//添加庄园小组件
         bizKeyList.add("HIRE_LOW_ACTIVITY");//雇佣小鸡拿饲料
+        bizKeyList.add("HEART_DONATION_ADVANCED_FOOD_V2");//爱心美食任务
         bizKeyList.add("DIANTAOHUANDUAN");//去点淘逛一逛
         bizKeyList.add("TAO_GOLDEN_V2");//去逛一逛淘金币小镇
         bizKeyList.add("SHANGYEHUA_90_1");//去杂货铺逛一逛
@@ -1876,7 +1877,7 @@ public class AntFarm extends ModelTask {
                             if (chouchouleReceiveFarmTaskAward(taskId)) {
                                 doubleCheck = true;
                             }
-                        } else if ("TODO".equals(taskStatus) && !Objects.equals(jo.optString("innerAction"), "DONATION")) {
+                        } else if ("TODO".equals(taskStatus)) {
                             if (chouchouleDoFarmTask(taskId, title, rightsTimesLimit - rightsTimes)) {
                                 doubleCheck = true;
                             }

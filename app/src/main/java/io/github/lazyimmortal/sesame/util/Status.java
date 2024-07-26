@@ -52,7 +52,6 @@ public class Status {
 
     // other
     private Set<String> memberSignInList = new HashSet<>();
-    private int kbSignIn = 0;
 
     // 保存时间
     private Long saveTime = 0L;
@@ -446,19 +445,6 @@ public class Status {
     public static void DoubleToday() {
         INSTANCE.doubleTimes += 1;
         save();
-    }
-
-    public static boolean canKbSignInToday() {
-        Status stat = INSTANCE;
-        return stat.kbSignIn < Statistics.INSTANCE.getDay().time;
-    }
-
-    public static void KbSignInToday() {
-        Status stat = INSTANCE;
-        if (stat.kbSignIn != Statistics.INSTANCE.getDay().time) {
-            stat.kbSignIn = Statistics.INSTANCE.getDay().time;
-            save();
-        }
     }
 
     public static Set<String> getDadaDailySet() {

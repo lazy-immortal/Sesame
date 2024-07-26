@@ -31,7 +31,7 @@ public class AntFarm extends ModelTask {
     private double harvestBenevolenceScore;
     private int unreceiveTaskAward = 0;
     private double finalScore = 0d;
-    private double foodInTrough = 0d;
+    private int foodInTrough = 0;
 
     private FarmTool[] farmTools;
 
@@ -476,15 +476,14 @@ public class AntFarm extends ModelTask {
                 syncAnimalStatus(ownerFarmId);
             }
             try {
-                Long startEatTime = System.currentTimeMillis();
-                double allFoodHaveEatten = 0d;
-                double allConsumeSpeed = 0d;
+                double foodHaveEatten = 0d;
+                double consumeSpeed = 0d;
+                long nowTime = System.currentTimeMillis();
                 for (Animal animal : animals) {
-                    allFoodHaveEatten += animal.foodHaveEatten;
-                    allFoodHaveEatten += animal.consumeSpeed * (startEatTime - animal.startEatTime) / 1000;
-                    allConsumeSpeed += animal.consumeSpeed;
+                    foodHaveEatten += (nowTime - animal.startEatTime) / 1000 * animal.consumeSpeed;
+                    consumeSpeed += animal.consumeSpeed;
                 }
-                long nextFeedTime = startEatTime + (long) ((foodInTrough - (allFoodHaveEatten)) / (allConsumeSpeed)) * 1000;
+                long nextFeedTime = nowTime + (long) ((foodInTrough - foodHaveEatten) / consumeSpeed) * 1000;
                 String taskId = "FA|" + ownerFarmId;
                 if (!hasChildTask(taskId)) {
                     addChildTask(new ChildModelTask(taskId, "FA", () -> feedAnimal(ownerFarmId), nextFeedTime));
@@ -1191,21 +1190,20 @@ public class AntFarm extends ModelTask {
             return false;
         }
         double consumeSpeed = 0d;
-        double allFoodHaveEatten = 0d;
+        double foodHaveEatten = 0d;
         long nowTime = System.currentTimeMillis() / 1000;
         for (Animal animal : animals) {
             if (animal.masterFarmId.equals(ownerFarmId)) {
                 consumeSpeed = animal.consumeSpeed;
             }
-            allFoodHaveEatten += animal.foodHaveEatten;
-            allFoodHaveEatten += animal.consumeSpeed * (nowTime - animal.startEatTime / 1000);
+            foodHaveEatten += animal.consumeSpeed * (nowTime - animal.startEatTime / 1000);
         }
         // consumeSpeed: g/s
         // AccelerateTool: -1h = -60m = -3600s
         boolean isUseAccelerateTool = false;
-        while (foodInTrough - allFoodHaveEatten >= consumeSpeed * 3600
+        while (foodInTrough - foodHaveEatten >= consumeSpeed * 3600
                 && useFarmTool(ownerFarmId, ToolType.ACCELERATETOOL)) {
-            allFoodHaveEatten += consumeSpeed * 3600;
+            foodHaveEatten += consumeSpeed * 3600;
             isUseAccelerateTool = true;
             Status.useAccelerateTool();
             TimeUtil.sleep(1000);
@@ -1437,7 +1435,7 @@ public class AntFarm extends ModelTask {
                 foodStock = subFarmVO.getInt("foodStock");
             }
             if (subFarmVO.has("foodInTrough")) {
-                foodInTrough = subFarmVO.getDouble("foodInTrough");
+                foodInTrough = subFarmVO.getInt("foodInTrough");
             }
             if (subFarmVO.has("manureVO")) {
                 JSONArray manurePotList = subFarmVO.getJSONObject("manureVO").getJSONArray("manurePotList");

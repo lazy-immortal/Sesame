@@ -2387,6 +2387,10 @@ public class AntForestV2 extends ModelTask {
                     jo = skuModelList.getJSONObject(j);
                     if (jo.optBoolean("secKill")) {
                         long secKillStartTime = jo.getLong("secKillStartTime");
+                        long nowTime = System.currentTimeMillis();
+                        if (nowTime > secKillStartTime) {
+                            continue;
+                        }
                         String spuId = jo.getString("spuId");
                         String skuId = jo.getString("skuId");
                         String skuName = jo.getString("skuName");
@@ -2394,8 +2398,6 @@ public class AntForestV2 extends ModelTask {
                         if(!hasChildTask(taskId)) {
                             addChildTask(new ChildModelTask(taskId, "SK", () -> SecKillItem(spuId, skuId, skuName), secKillStartTime));
                             Log.record("添加蹲点兑换🎐[" + skuName + "]在[" + TimeUtil.getCommonDate(secKillStartTime) + "]执行");
-                        } else {
-                            addChildTask(new ChildModelTask(taskId, "SK", () -> SecKillItem(spuId, skuId, skuName), secKillStartTime));
                         }
                     }
                 }

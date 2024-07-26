@@ -199,6 +199,11 @@ public class AntForestRpcCall {
                         + VERSION + "\"}]");
     }
 
+    public static String itemList() {
+        return ApplicationHook.requestString("com.alipay.antiep.itemList",
+                "[{\"extendInfo\":\"{}\",\"fromSpuId\":\"\",\"labelType\":\"\",\"pageSize\":10,\"requestType\":\"rpc\",\"sceneCode\":\"ANTFOREST_VITALITY\",\"source\":\"afEntry\",\"startIndex\":0}]");
+    }
+
     public static String itemList(String labelType) {
         return ApplicationHook.requestString("com.alipay.antiep.itemList",
                 "[{\"extendInfo\":\"{}\",\"labelType\":\"" + labelType

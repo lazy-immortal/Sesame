@@ -110,6 +110,7 @@ public class AntForestV2 extends ModelTask {
     private SelectAndCountModelField waterFriendList;
     private IntegerModelField waterFriendCount;
     private SelectModelField giveEnergyRainList;
+    private BooleanModelField vitalitySecKill;
     private BooleanModelField exchangeEnergyDoubleClick;
     @Getter
     private IntegerModelField exchangeEnergyDoubleClickCount;
@@ -175,6 +176,7 @@ public class AntForestV2 extends ModelTask {
         modelFields.addField(helpFriendCollect = new BooleanModelField("helpFriendCollect", "复活能量 | 开启", false));
         modelFields.addField(helpFriendCollectType = new ChoiceModelField("helpFriendCollectType", "复活能量 | 动作", HelpFriendCollectType.HELP, HelpFriendCollectType.nickNames));
         modelFields.addField(helpFriendCollectList = new SelectModelField("helpFriendCollectList", "复活能量 | 好友列表", new LinkedHashSet<>(), AlipayUser::getList));
+        modelFields.addField(vitalitySecKill = new BooleanModelField("vitalitySecKill", "活力值 | 限量秒杀", false));
         modelFields.addField(exchangeEnergyDoubleClick = new BooleanModelField("exchangeEnergyDoubleClick", "活力值 | 兑换限时双击卡", false));
         modelFields.addField(exchangeEnergyDoubleClickCount = new IntegerModelField("exchangeEnergyDoubleClickCount", "活力值 | 兑换限时双击卡数量", 6));
         modelFields.addField(exchangeEnergyDoubleClickLongTime = new BooleanModelField("exchangeEnergyDoubleClickLongTime", "活力值 | 兑换永久双击卡", false));
@@ -492,6 +494,9 @@ public class AntForestV2 extends ModelTask {
                             break;
                         }
                     }
+                }
+                if (vitalitySecKill.getValue()) {
+                    querySecKillItem();
                 }
                 if (exchangeEnergyDoubleClick.getValue() && Status.canExchangeDoubleCardToday()) {
                     int exchangeCount = exchangeEnergyDoubleClickCount.getValue();
@@ -2367,6 +2372,54 @@ public class AntForestV2 extends ModelTask {
         }
     }
 
+    // 限量秒杀
+    private void querySecKillItem(){
+        try {
+            JSONObject jo = new JSONObject(AntForestRpcCall.itemList());
+            if (!jo.optBoolean("success")) {
+                return;
+            }
+            JSONArray itemInfoVOList = jo.getJSONArray("itemInfoVOList");
+            for (int i = 0; i < itemInfoVOList.length(); i++) {
+                jo = itemInfoVOList.getJSONObject(i);
+                JSONArray skuModelList = jo.getJSONArray("skuModelList");
+                for (int j = 0; j < skuModelList.length(); j++) {
+                    jo = skuModelList.getJSONObject(j);
+                    if (jo.optBoolean("secKill")) {
+                        long secKillStartTime = jo.getLong("secKillStartTime");
+                        String spuId = jo.getString("spuId");
+                        String skuId = jo.getString("skuId");
+                        String skuName = jo.getString("skuName");
+                        String taskId = "SK|" + skuId;
+                        if(!hasChildTask(taskId)) {
+                            addChildTask(new ChildModelTask(taskId, "SK", () -> SecKillItem(spuId, skuId, skuName), secKillStartTime));
+                            Log.record("添加蹲点兑换🎐[" + skuName + "]在[" + TimeUtil.getCommonDate(secKillStartTime) + "]执行");
+                        } else {
+                            addChildTask(new ChildModelTask(taskId, "SK", () -> SecKillItem(spuId, skuId, skuName), secKillStartTime));
+                        }
+                    }
+                }
+            }
+        } catch (Throwable th) {
+            Log.i(TAG, "querySecKillItem err:");
+            Log.printStackTrace(TAG, th);
+        }
+    }
+
+    private void SecKillItem(String spuId, String skuId, String skuName) {
+        try {
+            JSONObject jo = new JSONObject(AntForestRpcCall.exchangeBenefit(spuId, skuId));
+            if ("SUCCESS".equals(jo.getString("resultCode"))) {
+                Log.forest("活力兑换🎐[" + skuName + "]#限量秒杀成功");
+            } else {
+                Log.record(jo.getString("resultDesc"));
+                Log.i(jo.toString());
+            }
+        } catch (Throwable th) {
+            Log.i(TAG, "SecKillItem err:");
+            Log.printStackTrace(TAG, th);
+        }
+    }
     /**
      * The enum Collect status.
      */

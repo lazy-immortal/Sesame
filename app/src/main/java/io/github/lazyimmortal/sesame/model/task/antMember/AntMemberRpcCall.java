@@ -122,11 +122,6 @@ public class AntMemberRpcCall {
                 "[{\"sourceBusiness\":\"signInAd\",\"sourcePassMap\":{\"innerSource\":\"\",\"source\":\"myTab\",\"unid\":\"\"}}]");
     }
 
-    public static String rpcCall_signIn() {
-        String args1 = "[{\"sceneCode\":\"KOUBEI_INTEGRAL\",\"source\":\"ALIPAY_TAB\",\"version\":\"2.0\"}]";
-        return ApplicationHook.requestString("alipay.kbmemberprod.action.signIn", args1);
-    }
-
     /**
      * 黄金票收取
      *

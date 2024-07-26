@@ -29,7 +29,6 @@ public class AntMember extends ModelTask {
     private BooleanModelField collectSesame;
     private BooleanModelField collectSecurityFund;
     private BooleanModelField promiseSportsRoute;
-    private BooleanModelField enableKb;
     private BooleanModelField enableGoldTicket;
     private BooleanModelField enableGameCenter;
     private BooleanModelField zcjSignIn;
@@ -44,7 +43,6 @@ public class AntMember extends ModelTask {
         modelFields.addField(collectSesame = new BooleanModelField("collectSesame", "芝麻粒领取", false));
         modelFields.addField(collectSecurityFund = new BooleanModelField("collectSecurityFund", "芝麻粒坚持攒保障金(可开启持续做)", false));
         modelFields.addField(promiseSportsRoute = new BooleanModelField("promiseSportsRoute", "芝麻粒坚持锻炼，走运动路线(只自动加入任务)", false));
-        modelFields.addField(enableKb = new BooleanModelField("enableKb", "口碑签到", false));
         modelFields.addField(enableGoldTicket = new BooleanModelField("enableGoldTicket", "黄金票签到", false));
         modelFields.addField(enableGameCenter = new BooleanModelField("enableGameCenter", "游戏中心签到", false));
         modelFields.addField(zcjSignIn = new BooleanModelField("zcjSignIn", "招财金签到", false));
@@ -70,9 +68,6 @@ public class AntMember extends ModelTask {
             }
             if (collectSecurityFund.getValue()) {
                 collectSecurityFund();
-            }
-            if (enableKb.getValue()) {
-                kbMember();
             }
             if (enableGoldTicket.getValue()) {
                 goldTicket();
@@ -631,28 +626,6 @@ public class AntMember extends ModelTask {
             Log.printStackTrace(TAG, t);
         }
         return doubleCheck;
-    }
-
-    public void kbMember() {
-        try {
-            if (!Status.canKbSignInToday()) {
-                return;
-            }
-            String s = AntMemberRpcCall.rpcCall_signIn();
-            JSONObject jo = new JSONObject(s);
-            if (jo.optBoolean("success", false)) {
-                jo = jo.getJSONObject("data");
-                Log.other("口碑签到📅[第" + jo.getString("dayNo") + "天]#获得" + jo.getString("value") + "积分");
-                Status.KbSignInToday();
-            } else if (s.contains("\"HAS_SIGN_IN\"")) {
-                Status.KbSignInToday();
-            } else {
-                Log.i(TAG, jo.getString("errorMessage"));
-            }
-        } catch (Throwable t) {
-            Log.i(TAG, "signIn err:");
-            Log.printStackTrace(TAG, t);
-        }
     }
 
     private void goldTicket() {

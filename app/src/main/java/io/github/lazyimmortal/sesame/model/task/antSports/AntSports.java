@@ -33,7 +33,6 @@ public class AntSports extends ModelTask {
     private String walkPathThemeId;
     private BooleanModelField walkCustomPath;
     private StringModelField walkCustomPathId;
-    private BooleanModelField openTreasureBox;
     private BooleanModelField receiveCoinAsset;
     private BooleanModelField donateCharityCoin;
     private ChoiceModelField donateCharityCoinType;
@@ -65,7 +64,6 @@ public class AntSports extends ModelTask {
         modelFields.addField(walkPathTheme = new ChoiceModelField("walkPathTheme", "行走路线 | 主题", WalkPathTheme.DA_MEI_ZHONG_GUO, WalkPathTheme.nickNames));
         modelFields.addField(walkCustomPath = new BooleanModelField("walkCustomPath", "行走路线 | 开启自定义路线", false));
         modelFields.addField(walkCustomPathId = new StringModelField("walkCustomPathId", "行走路线 | 自定义路线代码(debug)", "p0002023122214520001"));
-        modelFields.addField(openTreasureBox = new BooleanModelField("openTreasureBox", "开启宝箱", false));
         modelFields.addField(sportsTasks = new BooleanModelField("sportsTasks", "开启运动任务", false));
         modelFields.addField(receiveCoinAsset = new BooleanModelField("receiveCoinAsset", "收运动币", false));
         modelFields.addField(donateCharityCoin = new BooleanModelField("donateCharityCoin", "捐运动币 | 开启", false));
@@ -136,8 +134,6 @@ public class AntSports extends ModelTask {
                 walkPathThemeId = WalkPathTheme.walkPathThemeId[walkPathTheme.getValue()];
                 walk();
             }
-            if (openTreasureBox.getValue() && !walk.getValue())
-                queryMyHomePage(loader);
 
             if (donateCharityCoin.getValue() && Status.canDonateCharityCoin())
                 queryProjectList(loader);

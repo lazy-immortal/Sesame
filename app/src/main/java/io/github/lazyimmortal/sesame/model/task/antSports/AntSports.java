@@ -150,7 +150,8 @@ public class AntSports extends ModelTask {
             }
 
             if (battleForFriends.getValue()) {
-                queryClubHome();
+                queryClubHomeBeforeCollect();
+                queryClubHomeBeforeTrain();
                 buyMember();
             }
 
@@ -283,7 +284,10 @@ public class AntSports extends ModelTask {
             String joinedPathId = user.getJSONObject("data").getString("joinedPathId");
             if (joinedPathId == null) {
                 String pathId = queryJoinPath(walkPathThemeId);
-                joinPath(pathId);
+                if(joinPath(pathId)) {
+                    TimeUtil.sleep(1000);
+                    walk();
+                }
                 return;
             }
             JSONObject path = queryPath(joinedPathId);
@@ -291,7 +295,10 @@ public class AntSports extends ModelTask {
             if ("COMPLETED".equals(userPathStep.getString("pathCompleteStatus"))) {
                 Log.record("行走路线🚶🏻‍♂️路线[" + userPathStep.getString("pathName") + "]已完成");
                 String pathId = queryJoinPath(walkPathThemeId);
-                joinPath(pathId);
+                if (joinPath(pathId)) {
+                    TimeUtil.sleep(1000);
+                    walk();
+                }
                 return;
             }
             int minGoStepCount = path.getJSONObject("path").getInt("minGoStepCount");
@@ -302,6 +309,8 @@ public class AntSports extends ModelTask {
             if  (remainStepCount >= minGoStepCount) {
                 int useStepCount = Math.min(remainStepCount, needStepCount);
                 walkGo(userPathStep.getString("pathId"), useStepCount, userPathStep.getString("pathName"));
+                TimeUtil.sleep(1000);
+                walk();
             }
         } catch (Throwable t) {
             Log.i(TAG, "walk err:");
@@ -424,7 +433,7 @@ public class AntSports extends ModelTask {
         return pathId;
     }
 
-    private void joinPath(String pathId) {
+    private boolean joinPath(String pathId) {
         if (pathId == null) {
             // 龙年祈福线
             pathId = "p0002023122214520001";
@@ -434,214 +443,21 @@ public class AntSports extends ModelTask {
             if (jo.optBoolean("success")) {
                 JSONObject path = queryPath(pathId);
                 Log.record("行走路线🚶🏻‍♂️路线[" + path.getJSONObject("path").getString("name") + "]已加入");
+                return true;
             } else {
                 Log.record("行走路线🚶🏻‍♂️路线[" + pathId + "]有误，无法加入！");
+                return false;
             }
         } catch (Throwable t) {
             Log.i(TAG, "joinPath err:");
             Log.printStackTrace(TAG, t);
+            return false;
         }
     }
 
     /*
      * 新版行走路线 -- end
      */
-
-    private void queryMyHomePage(ClassLoader loader) {
-        try {
-            String s = AntSportsRpcCall.queryMyHomePage();
-            JSONObject jo = new JSONObject(s);
-            if ("SUCCESS".equals(jo.getString("resultCode"))) {
-                s = jo.getString("pathJoinStatus");
-                if ("GOING".equals(s)) {
-                    if (jo.has("pathCompleteStatus")) {
-                        if ("COMPLETED".equals(jo.getString("pathCompleteStatus"))) {
-                            jo = new JSONObject(AntSportsRpcCall.queryBaseList());
-                            if ("SUCCESS".equals(jo.getString("resultCode"))) {
-                                JSONArray allPathBaseInfoList = jo.getJSONArray("allPathBaseInfoList");
-                                JSONArray otherAllPathBaseInfoList = jo.getJSONArray("otherAllPathBaseInfoList")
-                                        .getJSONObject(0)
-                                        .getJSONArray("allPathBaseInfoList");
-                                join(loader, allPathBaseInfoList, otherAllPathBaseInfoList, "");
-                            } else {
-                                Log.i(TAG, jo.getString("resultDesc"));
-                            }
-                        }
-                    } else {
-                        String rankCacheKey = jo.getString("rankCacheKey");
-                        JSONArray ja = jo.getJSONArray("treasureBoxModelList");
-                        for (int i = 0; i < ja.length(); i++) {
-                            parseTreasureBoxModel(loader, ja.getJSONObject(i), rankCacheKey);
-                        }
-                        JSONObject joPathRender = jo.getJSONObject("pathRenderModel");
-                        String title = joPathRender.getString("title");
-                        int minGoStepCount = joPathRender.getInt("minGoStepCount");
-                        jo = jo.getJSONObject("dailyStepModel");
-                        int consumeQuantity = jo.getInt("consumeQuantity");
-                        int produceQuantity = jo.getInt("produceQuantity");
-                        String day = jo.getString("day");
-                        int canMoveStepCount = produceQuantity - consumeQuantity;
-                        if (canMoveStepCount >= minGoStepCount) {
-                            go(loader, day, rankCacheKey, canMoveStepCount, title);
-                        }
-                    }
-                } else if ("NOT_JOIN".equals(s)) {
-                    String firstJoinPathTitle = jo.getString("firstJoinPathTitle");
-                    JSONArray allPathBaseInfoList = jo.getJSONArray("allPathBaseInfoList");
-                    JSONArray otherAllPathBaseInfoList = jo.getJSONArray("otherAllPathBaseInfoList").getJSONObject(0)
-                            .getJSONArray("allPathBaseInfoList");
-                    join(loader, allPathBaseInfoList, otherAllPathBaseInfoList, firstJoinPathTitle);
-                }
-            } else {
-                Log.i(TAG, jo.getString("resultDesc"));
-            }
-        } catch (Throwable t) {
-            Log.i(TAG, "queryMyHomePage err:");
-            Log.printStackTrace(TAG, t);
-        }
-    }
-
-    private void join(ClassLoader loader, JSONArray allPathBaseInfoList, JSONArray otherAllPathBaseInfoList,
-                      String firstJoinPathTitle) {
-        try {
-            int index = -1;
-            String title = null;
-            String pathId = null;
-            JSONObject jo = new JSONObject();
-            for (int i = allPathBaseInfoList.length() - 1; i >= 0; i--) {
-                jo = allPathBaseInfoList.getJSONObject(i);
-                if (jo.getBoolean("unlocked")) {
-                    title = jo.getString("title");
-                    pathId = jo.getString("pathId");
-                    index = i;
-                    break;
-                }
-            }
-            if (index < 0 || index == allPathBaseInfoList.length() - 1) {
-                for (int j = otherAllPathBaseInfoList.length() - 1; j >= 0; j--) {
-                    jo = otherAllPathBaseInfoList.getJSONObject(j);
-                    if (jo.getBoolean("unlocked")) {
-                        if (j != otherAllPathBaseInfoList.length() - 1 || index != allPathBaseInfoList.length() - 1) {
-                            title = jo.getString("title");
-                            pathId = jo.getString("pathId");
-                            index = j;
-                        }
-                        break;
-                    }
-                }
-            }
-            if (index >= 0) {
-                String s;
-                if (title.equals(firstJoinPathTitle)) {
-                    s = AntSportsRpcCall.openAndJoinFirst();
-                } else {
-                    s = AntSportsRpcCall.join(pathId);
-                }
-                jo = new JSONObject(s);
-                if ("SUCCESS".equals(jo.getString("resultCode"))) {
-                    Log.other("加入线路🚶🏻‍♂️[" + title + "]");
-                    queryMyHomePage(loader);
-                } else {
-                    Log.i(TAG, jo.getString("resultDesc"));
-                }
-            } else {
-                Log.record("好像没有可走的线路了！");
-            }
-        } catch (Throwable t) {
-            Log.i(TAG, "join err:");
-            Log.printStackTrace(TAG, t);
-        }
-    }
-
-    private void go(ClassLoader loader, String day, String rankCacheKey, int stepCount, String title) {
-        try {
-            String s = AntSportsRpcCall.go(day, rankCacheKey, stepCount);
-            JSONObject jo = new JSONObject(s);
-            if ("SUCCESS".equals(jo.getString("resultCode"))) {
-                Log.other("行走线路🚶🏻‍♂️[" + title + "]#前进了" + jo.getInt("goStepCount") + "步");
-                boolean completed = "COMPLETED".equals(jo.getString("completeStatus"));
-                JSONArray ja = jo.getJSONArray("allTreasureBoxModelList");
-                for (int i = 0; i < ja.length(); i++) {
-                    parseTreasureBoxModel(loader, ja.getJSONObject(i), rankCacheKey);
-                }
-                if (completed) {
-                    Log.other("完成线路🚶🏻‍♂️[" + title + "]");
-                    queryMyHomePage(loader);
-                }
-            } else {
-                Log.i(TAG, jo.getString("resultDesc"));
-            }
-        } catch (Throwable t) {
-            Log.i(TAG, "go err:");
-            Log.printStackTrace(TAG, t);
-        }
-    }
-
-    private void parseTreasureBoxModel(ClassLoader loader, JSONObject jo, String rankCacheKey) {
-        try {
-            String canOpenTime = jo.getString("canOpenTime");
-            String issueTime = jo.getString("issueTime");
-            String boxNo = jo.getString("boxNo");
-            String userId = jo.getString("userId");
-            if (canOpenTime.equals(issueTime)) {
-                openTreasureBox(loader, boxNo, userId);
-            } else {
-                long cot = Long.parseLong(canOpenTime);
-                long now = Long.parseLong(rankCacheKey);
-                long delay = cot - now;
-                if (delay <= 0) {
-                    openTreasureBox(loader, boxNo, userId);
-                    return;
-                }
-                if (delay < BaseModel.getCheckInterval().getValue()) {
-                    String taskId = "BX|" + boxNo;
-                    if (hasChildTask(taskId)) {
-                        return;
-                    }
-                    Log.record("还有 " + delay + "ms 开运动宝箱");
-                    addChildTask(new ChildModelTask(taskId, "BX", () -> {
-                        Log.record("蹲点开箱开始");
-                        long startTime = System.currentTimeMillis();
-                        while (System.currentTimeMillis() - startTime < 5_000) {
-                            if (openTreasureBox(loader, boxNo, userId) > 0) {
-                                break;
-                            }
-                            TimeUtil.sleep(200);
-                        }
-                    }, System.currentTimeMillis() + delay));
-                }
-            }
-        } catch (Throwable t) {
-            Log.i(TAG, "parseTreasureBoxModel err:");
-            Log.printStackTrace(TAG, t);
-        }
-    }
-
-    private int openTreasureBox(ClassLoader loader, String boxNo, String userId) {
-        try {
-            String s = AntSportsRpcCall.openTreasureBox(boxNo, userId);
-            JSONObject jo = new JSONObject(s);
-            if ("SUCCESS".equals(jo.getString("resultCode"))) {
-                JSONArray ja = jo.getJSONArray("treasureBoxAwards");
-                int num = 0;
-                for (int i = 0; i < ja.length(); i++) {
-                    jo = ja.getJSONObject(i);
-                    num += jo.getInt("num");
-                    Log.other("运动宝箱🎁[" + num + jo.getString("name") + "]");
-                }
-                return num;
-            } else if ("TREASUREBOX_NOT_EXIST".equals(jo.getString("resultCode"))) {
-                Log.record(jo.getString("resultDesc"));
-                return 1;
-            } else {
-                Log.record(jo.getString("resultDesc"));
-            }
-        } catch (Throwable t) {
-            Log.i(TAG, "openTreasureBox err:");
-            Log.printStackTrace(TAG, t);
-        }
-        return 0;
-    }
 
     private void queryProjectList(ClassLoader loader) {
         try {
@@ -975,54 +791,100 @@ public class AntSports extends ModelTask {
     }
 
     /* 抢好友大战 */
-    private void queryClubHome() {
+    private void queryClubHomeBeforeCollect() {
         try {
-            // 发送 RPC 请求获取 club home 数据
-            JSONObject clubHomeData = new JSONObject(AntSportsRpcCall.queryClubHome());
-            // 处理 mainRoom 中的 bubbleList
-            processBubbleList(clubHomeData.optJSONObject("mainRoom"));
-            // 处理 roomList 中的每个房间的 bubbleList
-            JSONArray roomList = clubHomeData.optJSONArray("roomList");
+            JSONObject jo = new JSONObject(AntSportsRpcCall.queryClubHome());
+            if (!"SUCCESS".equals(jo.getString("resultCode"))) {
+                Log.i(TAG, jo.getString("resultDesc"));
+                return;
+            }
+            JSONArray roomList = jo.optJSONArray("roomList");
             if (roomList == null) {
                 return;
             }
             for (int i = 0; i < roomList.length(); i++) {
-                JSONObject room = roomList.optJSONObject(i);
-                processBubbleList(room);
+                JSONObject room = roomList.getJSONObject(i);
+                collectBubble(room);
+                TimeUtil.sleep(1000);
             }
-            trainMember();
         } catch (Throwable t) {
-            Log.i(TAG, "queryClubHome err:");
+            Log.i(TAG, "queryClubHomeBeforeCollect err:");
             Log.printStackTrace(TAG, t);
         }
     }
 
-    // 抢好友大战-收金币
-    private void processBubbleList(JSONObject object) {
-        if (object != null && object.has("bubbleList")) {
-            try {
-                JSONArray bubbleList = object.getJSONArray("bubbleList");
-                for (int j = 0; j < bubbleList.length(); j++) {
-                    JSONObject bubble = bubbleList.getJSONObject(j);
-                    // 获取 bubbleId
-                    String bubbleId = bubble.optString("bubbleId");
-                    // 调用 collectBubble 方法
-                    AntSportsRpcCall.collectBubble(bubbleId);
-                    // 输出日志信息
-                    int fullCoin = bubble.optInt("fullCoin");
-                    Log.other("训练好友💰️[获得:" + fullCoin + "金币]");
-                    // 添加 1 秒的等待时间
-                    Thread.sleep(1000);
-                }
-            } catch (Throwable t) {
-                Log.i(TAG, "processBubbleList err:");
-                Log.printStackTrace(TAG, t);
+    private void queryClubHomeBeforeTrain() {
+        try {
+            JSONObject jo = new JSONObject(AntSportsRpcCall.queryClubHome());
+            if (!"SUCCESS".equals(jo.getString("resultCode"))) {
+                Log.i(TAG, jo.getString("resultDesc"));
+                return;
             }
+            JSONArray roomList = jo.optJSONArray("roomList");
+            if (roomList == null) {
+                return;
+            }
+            for (int i = 0; i < roomList.length(); i++) {
+                JSONObject room = roomList.getJSONObject(i);
+                trainMember(room);
+                TimeUtil.sleep(1000);
+            }
+        } catch (Throwable t) {
+            Log.i(TAG, "queryClubHomeBeforeTrain err:");
+            Log.printStackTrace(TAG, t);
+        }
+    }
+
+    // 抢好友大战-收集运动币
+    private void collectBubble(JSONObject room) {
+        try {
+            if (room == null || !room.has("bubbleList")) {
+                return;
+            }
+            JSONArray bubbleList = room.getJSONArray("bubbleList");
+            for (int i = 0; i < bubbleList.length(); i++) {
+                JSONObject bubble = bubbleList.getJSONObject(i);
+                String bubbleId = bubble.getString("bubbleId");
+                JSONObject jo = new JSONObject(AntSportsRpcCall.collectBubble(bubbleId));
+                if (!"SUCCESS".equals(jo.getString("resultCode"))) {
+                    Log.i(TAG, jo.getString("resultDesc"));
+                    return;
+                }
+                int collectCoin = jo.getInt("collectCoin");
+                Log.record("训练好友💰️[获得:" + collectCoin + "金币]");
+            }
+        } catch (Throwable t) {
+            Log.i(TAG, "collectBubble err:");
+            Log.printStackTrace(TAG, t);
+        }
+    }
+
+    // 抢好友大战-训练好友
+    private void trainMember(JSONObject room) {
+        try {
+            if (room == null || !room.has("memberList")) {
+                return;
+            }
+            JSONArray memberList = room.getJSONArray("memberList");
+            for (int i = 0; i < memberList.length(); i++) {
+                JSONObject member = memberList.getJSONObject(i);
+                String memberId = member.getString("memberId");
+                String originBossId = member.getString("originBossId");
+                JSONObject trainInfo = member.getJSONObject("trainInfo");
+                if (!trainInfo.getBoolean("training")) {
+                    trainMember(memberId, originBossId);
+                } else {
+                    autoTrainMember(memberId, originBossId, trainInfo);
+                }
+            }
+        } catch (Throwable t) {
+            Log.i(TAG, "trainMember err:");
+            Log.printStackTrace(TAG, t);
         }
     }
 
     // 抢好友大战-获取训练项目
-    private JSONObject queryTrainItem() {
+    private JSONObject getTrainItem() {
         JSONObject trainItem = null;
         try {
             JSONObject jo = new JSONObject(AntSportsRpcCall.queryTrainItem());
@@ -1039,13 +901,36 @@ public class AntSports extends ModelTask {
                 }
             }
         } catch (Throwable t) {
-            Log.i(TAG, "queryTrainItem err:");
+            Log.i(TAG, "getTrainItem err:");
             Log.printStackTrace(TAG, t);
         }
         return trainItem;
     }
 
-    private void autoTrainMember(String originBossId, JSONObject trainInfo) {
+    // 抢好友大战-训练指定好友
+    private void trainMember(String memberId, String originBossId) {
+        try {
+            JSONObject trainItem = getTrainItem();
+            String trainItemName = trainItem.getString("name");
+            String trainItemType = trainItem.getString("itemType");
+            JSONObject jo = new JSONObject(AntSportsRpcCall.trainMember(trainItemType, memberId, originBossId));
+            if (jo.optBoolean("success")) {
+                String userName = UserIdMap.getMaskName(originBossId);
+                Log.record("训练好友🥋训练[" + userName + "]" + trainItemName);
+                String taskId = "TRAIN|" + originBossId;
+                if (hasChildTask(taskId)) {
+                    removeChildTask(taskId);
+                }
+                autoTrainMember(memberId, originBossId, jo.getJSONObject("trainInfo"));
+            }
+        } catch (Throwable t) {
+            Log.i(TAG, "collectBubble err:");
+            Log.printStackTrace(TAG, t);
+        }
+    }
+
+    // 抢好友大战-蹲点训练
+    private void autoTrainMember(String memberId, String originBossId, JSONObject trainInfo) {
         try {
             // 获取用户名称
             String userName = UserIdMap.getMaskName(originBossId);
@@ -1053,67 +938,14 @@ public class AntSports extends ModelTask {
             Long gmtEnd = trainInfo.getLong("gmtEnd");
             String taskId = "TRAIN|" + originBossId;
             if (!hasChildTask(taskId)) {
-                addChildTask(new ChildModelTask(taskId, "TRAIN", this::queryClubHome, gmtEnd));
+                addChildTask(new ChildModelTask(taskId, "TRAIN", () -> {
+                    queryClubHomeBeforeCollect();
+                    trainMember(memberId, originBossId);
+                }, gmtEnd));
                 Log.record("添加蹲点训练🥋[" + userName + "]在[" + TimeUtil.getCommonDate(gmtEnd) + "]执行");
-            } else {
-                addChildTask(new ChildModelTask(taskId, "TRAIN", this::queryClubHome, gmtEnd));
-                Log.record("更新蹲点训练🥋[" + userName + "]在[" + TimeUtil.getCommonDate(gmtEnd) + "]执行");
             }
         } catch (Throwable t) {
             Log.i(TAG, "autoTrainMember err:");
-            Log.printStackTrace(TAG, t);
-        }
-    }
-
-    // 抢好友大战-训练好友
-    private void trainMember() {
-        try {
-            // 发送 RPC 请求获取 club home 数据
-            JSONObject jo = new JSONObject(AntSportsRpcCall.queryClubHome());
-            // 检查是否存在 roomList
-            if (!jo.has("roomList")) {
-                return;
-            }
-            // 获取训练项目
-            JSONObject trainItem = queryTrainItem();
-            String trainItemName = trainItem.getString("name");
-            String trainItemType = trainItem.getString("itemType");
-            // 遍历 roomList
-            JSONArray roomList = jo.getJSONArray("roomList");
-            for (int i = 0; i < roomList.length(); i++) {
-                JSONObject room = roomList.getJSONObject(i);
-                // 获取 memberList
-                JSONArray memberList = room.getJSONArray("memberList");
-                if (memberList.length() == 0) {
-                    break;
-                }
-                // 获取 member
-                JSONObject member = memberList.getJSONObject(0);
-                // 提取 memberId 和 originBossId
-                String memberId = member.getString("memberId");
-                String originBossId = member.getString("originBossId");
-
-                JSONObject trainInfo = member.getJSONObject("trainInfo");
-                // 检查是否在训练
-                if (trainInfo.optBoolean("training")) {
-                    autoTrainMember(originBossId, trainInfo);
-                    continue;
-                }
-
-                // 调用 trainMember 方法并传递 itemType、memberId 和 originBossId 值
-                jo = new JSONObject(AntSportsRpcCall.trainMember(trainItemType, memberId, originBossId));
-                if (jo.optBoolean("success")) {
-                    // 获取用户名称
-                    String userName = UserIdMap.getMaskName(originBossId);
-                    // 将用户名称和训练项目的名称添加到日志输出
-                    Log.other("训练好友🥋训练[" + userName + "]" + trainItemName);
-                    autoTrainMember(originBossId, jo.getJSONObject("trainInfo"));
-                }
-                // 添加 1 秒的间隔
-                TimeUtil.sleep(1000);
-            }
-        } catch (Throwable t) {
-            Log.i(TAG, "trainMember err:");
             Log.printStackTrace(TAG, t);
         }
     }
@@ -1180,7 +1012,7 @@ public class AntSports extends ModelTask {
                                         String userName = UserIdMap.getMaskName(originBossId);
                                         Log.other("抢购好友🥋[成功:将 " + userName + " 抢回来]");
                                         // 执行训练好友
-                                        trainMember();
+                                        trainMember(memberId, originBossId);
                                     } else if ("CLUB_AMOUNT_NOT_ENOUGH".equals(buyMemberResponse.getString("resultCode"))) {
                                         Log.record("[运动币不足，无法完成抢购好友！]");
                                     } else if ("CLUB_MEMBER_TRADE_PROTECT".equals(buyMemberResponse.getString("resultCode"))) {

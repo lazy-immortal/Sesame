@@ -477,14 +477,14 @@ public class AntFarm extends ModelTask {
                 syncAnimalStatus(ownerFarmId);
             }
             try {
-                double allFoodHaveEatten = 0d;
-                double allConsumeSpeed = 0d;
-                long nowTime = System.currentTimeMillis() / 1000;
-                for (Animal animal: animals) {
-                    allFoodHaveEatten += animal.consumeSpeed * (nowTime - animal.startEatTime / 1000);
-                    allConsumeSpeed += animal.consumeSpeed;
+                double foodHaveEatten = 0d;
+                double consumeSpeed = 0d;
+                long nowTime = System.currentTimeMillis();
+                for (Animal animal : animals) {
+                    foodHaveEatten += (nowTime - animal.startEatTime) / 1000 * animal.consumeSpeed;
+                    consumeSpeed += animal.consumeSpeed;
                 }
-                long nextFeedTime = nowTime + (long) ((foodInTrough - allFoodHaveEatten) / allConsumeSpeed) * 1000;
+                long nextFeedTime = nowTime + (long) ((foodInTrough - foodHaveEatten) / consumeSpeed) * 1000;
                 String taskId = "FA|" + ownerFarmId;
                 if (!hasChildTask(taskId)) {
                     addChildTask(new ChildModelTask(taskId, "FA", () -> feedAnimal(ownerFarmId), nextFeedTime));
@@ -1191,20 +1191,20 @@ public class AntFarm extends ModelTask {
             return false;
         }
         double consumeSpeed = 0d;
-        double allFoodHaveEatten = 0d;
+        double foodHaveEatten = 0d;
         long nowTime = System.currentTimeMillis() / 1000;
         for (Animal animal : animals) {
             if (animal.masterFarmId.equals(ownerFarmId)) {
                 consumeSpeed = animal.consumeSpeed;
             }
-            allFoodHaveEatten += animal.consumeSpeed * (nowTime - animal.startEatTime / 1000);
+            foodHaveEatten += animal.consumeSpeed * (nowTime - animal.startEatTime / 1000);
         }
         // consumeSpeed: g/s
         // AccelerateTool: -1h = -60m = -3600s
         boolean isUseAccelerateTool = false;
-        while (foodInTrough - allFoodHaveEatten >= consumeSpeed * 3600
+        while (foodInTrough - foodHaveEatten >= consumeSpeed * 3600
                 && useFarmTool(ownerFarmId, ToolType.ACCELERATETOOL)) {
-            allFoodHaveEatten += consumeSpeed * 3600;
+            foodHaveEatten += consumeSpeed * 3600;
             isUseAccelerateTool = true;
             Status.useAccelerateTool();
             TimeUtil.sleep(1000);

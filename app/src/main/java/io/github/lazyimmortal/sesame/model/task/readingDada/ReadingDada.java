@@ -36,8 +36,7 @@ public class ReadingDada {
             JSONObject jo = new JSONObject(s);
             if ("200".equals(jo.getString("resultCode"))) {
                 JSONArray jsonArray = jo.getJSONArray("options");
-                String question = jo.getString("title");
-                String answer = AnswerAI.getAnswer(question, JsonUtil.jsonArrayToList(jsonArray));
+                String answer = AnswerAI.getAnswer(jo.getString("title"), JsonUtil.jsonArrayToList(jsonArray));
                 if (answer == null || answer.isEmpty()) {
                     answer = jsonArray.getString(0);
                 }

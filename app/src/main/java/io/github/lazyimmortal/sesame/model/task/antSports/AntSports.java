@@ -281,19 +281,7 @@ public class AntSports extends ModelTask {
             if (!user.optBoolean("success")) {
                 return;
             }
-            String joinedPathId = user.getJSONObject("data").getString("joinedPathId");
-            if (joinedPathId == null) {
-                String pathId = queryJoinPath(walkPathThemeId);
-                if(joinPath(pathId)) {
-                    TimeUtil.sleep(1000);
-                    walk();
-                }
-                return;
-            }
-            JSONObject path = queryPath(joinedPathId);
-            JSONObject userPathStep = path.getJSONObject("userPathStep");
-            if ("COMPLETED".equals(userPathStep.getString("pathCompleteStatus"))) {
-                Log.record("行走路线🚶🏻‍♂️路线[" + userPathStep.getString("pathName") + "]已完成");
+            if (!user.getJSONObject("data").has("joinedPathId")) {
                 String pathId = queryJoinPath(walkPathThemeId);
                 if (joinPath(pathId)) {
                     TimeUtil.sleep(1000);
@@ -301,13 +289,25 @@ public class AntSports extends ModelTask {
                 }
                 return;
             }
+            String joinedPathId = user.getJSONObject("data").getString("joinedPathId");
+            JSONObject path = queryPath(joinedPathId);
+            JSONObject userPathStep = path.getJSONObject("userPathStep");
+            if ("COMPLETED".equals(userPathStep.getString("pathCompleteStatus"))) {
+                Log.record("行走路线🚶🏻‍♂️路线[" + userPathStep.getString("pathName") + "]已完成");
+                String pathId = queryJoinPath(walkPathThemeId);
+                if (!joinPath(pathId)) {
+                    return;
+                }
+                path = queryPath(pathId);
+                userPathStep = path.getJSONObject("userPathStep");
+            }
             int minGoStepCount = path.getJSONObject("path").getInt("minGoStepCount");
             int pathStepCount = path.getJSONObject("path").getInt("pathStepCount");
             int forwardStepCount = userPathStep.getInt("forwardStepCount");
             int remainStepCount = userPathStep.getInt("remainStepCount");
-            int needStepCount = pathStepCount - forwardStepCount;
-            if  (remainStepCount >= minGoStepCount) {
-                int useStepCount = Math.min(remainStepCount, needStepCount);
+            int useStepCount = Math.min(remainStepCount,
+                    pathStepCount == forwardStepCount ? pathStepCount : pathStepCount - forwardStepCount);
+            if  (useStepCount >= minGoStepCount) {
                 walkGo(userPathStep.getString("pathId"), useStepCount, userPathStep.getString("pathName"));
                 TimeUtil.sleep(1000);
                 walk();
@@ -325,7 +325,8 @@ public class AntSports extends ModelTask {
             JSONObject jo = new JSONObject(AntSportsRpcCall.walkGo("202312191135", sdf.format(date), pathId, useStepCount));
             if (jo.optBoolean("success")) {
                 Log.record("行走路线🚶🏻‍♂️路线[" + pathName + "]#前进了" + useStepCount + "步");
-                queryPath(pathId);
+                JSONArray treasureBoxList = jo.getJSONObject("data").getJSONArray("treasureBoxList");
+                openTreasureBox(treasureBoxList);
             }
         } catch (Throwable t) {
             Log.i(TAG, "walkGo err:");
@@ -369,11 +370,8 @@ public class AntSports extends ModelTask {
             JSONObject jo = new JSONObject(AntSportsRpcCall.queryPath("202312191135", sdf.format(date), pathId));
             if (jo.optBoolean("success")) {
                 path = jo.getJSONObject("data");
-                JSONArray ja = jo.getJSONObject("data").getJSONArray("treasureBoxList");
-                for (int i = 0; i < ja.length(); i++) {
-                    JSONObject treasureBox = ja.getJSONObject(i);
-                    receiveEvent(treasureBox.getString("boxNo"));
-                }
+                JSONArray treasureBoxList = jo.getJSONObject("data").getJSONArray("treasureBoxList");
+                openTreasureBox(treasureBoxList);
             }
         } catch (Throwable t) {
             Log.i(TAG, "queryPath err:");
@@ -395,6 +393,19 @@ public class AntSports extends ModelTask {
             }
         } catch (Throwable t) {
             Log.i(TAG, "receiveEvent err:");
+            Log.printStackTrace(TAG, t);
+        }
+    }
+
+    private void openTreasureBox(JSONArray treasureBoxList) {
+        try {
+            for (int i = 0; i < treasureBoxList.length(); i++) {
+                JSONObject treasureBox = treasureBoxList.getJSONObject(i);
+                receiveEvent(treasureBox.getString("boxNo"));
+                TimeUtil.sleep(1000);
+            }
+        } catch (Throwable t) {
+            Log.i(TAG, "openTreasureBox err:");
             Log.printStackTrace(TAG, t);
         }
     }

@@ -10,28 +10,23 @@ public interface AnswerAIInterface {
      * @param text 问题内容
      * @return AI回答结果
      */
-    String getAnswer(String text);
+    String getAnswerStr(String text);
 
     /**
-     * 获取答案
-     *
-     * @param title     问题
-     * @param answerList 答案集合
-     * @return 空没有获取到
+     * 获取AI答案
      */
-    String getAnswer(String title, List<String> answerList);
-
+    Integer getAnswer(String title, List<String> answerList);
 
     static AnswerAIInterface getInstance() {
         return new AnswerAIInterface() {
             @Override
-            public String getAnswer(String text) {
+            public String getAnswerStr(String text) {
                 return "";
             }
 
             @Override
-            public String getAnswer(String title, List<String> answerList) {
-                return "";
+            public Integer getAnswer(String title, List<String> answerList) {
+                return -1;
             }
         };
     }

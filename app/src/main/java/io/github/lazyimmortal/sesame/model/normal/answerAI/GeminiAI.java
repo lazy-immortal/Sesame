@@ -13,15 +13,15 @@ import static io.github.lazyimmortal.sesame.util.JsonUtil.getValueByPath;
  *
  * @author Xiong
  */
-public class GenAI implements AnswerAIInterface {
-    private final String TAG = GenAI.class.getSimpleName();
+public class GeminiAI implements AnswerAIInterface {
+    private final String TAG = GeminiAI.class.getSimpleName();
 
     private final String url = "https://api.genai.gd.edu.kg/google";
 
     private final String token;
 
     // 私有构造函数，防止外部实例化
-    public GenAI(String token) {
+    public GeminiAI(String token) {
         if (token != null && !token.isEmpty()) {
             this.token = token;
         } else {
@@ -39,7 +39,8 @@ public class GenAI implements AnswerAIInterface {
      * @return AI回答结果
      */
     @Override
-    public String getAnswer(String text) {
+    public String getAnswerStr(String text) {
+        Response response = null;
         String result = "";
         try {
             String content = "{\n" +
@@ -62,7 +63,7 @@ public class GenAI implements AnswerAIInterface {
                     .method("POST", body)
                     .addHeader("Content-Type", "application/json")
                     .build();
-            Response response = client.newCall(request).execute();
+            response = client.newCall(request).execute();
             if (response.body() == null) {
                 return result;
             }
@@ -77,6 +78,9 @@ public class GenAI implements AnswerAIInterface {
             result = getValueByPath(jsonObject, "candidates.[0].content.parts.[0].text");
         } catch (Throwable t) {
             Log.printStackTrace(TAG, t);
+            if (response != null) {
+                response.close();
+            }
         }
         return result;
     }
@@ -89,21 +93,19 @@ public class GenAI implements AnswerAIInterface {
      * @return 空没有获取到
      */
     @Override
-    public String getAnswer(String title, List<String> answerList) {
+    public Integer getAnswer(String title, List<String> answerList) {
         StringBuilder answerStr = new StringBuilder();
         for (String answer : answerList) {
             answerStr.append("[").append(answer).append("]");
         }
-        String answerResult = getAnswer(title + "\n" +
-                answerStr);
+        String answerResult = getAnswerStr(title + "\n" + answerStr);
         if (answerResult != null && !answerResult.isEmpty()) {
-            Log.record("AI🧠回答：" + answerResult);
-            for (String answer : answerList) {
-                if (answerResult.contains(answer)) {
-                    return answer;
+            for (int i = 0, size = answerList.size(); i < size; i++) {
+                if (answerResult.contains(answerList.get(i))) {
+                    return i;
                 }
             }
         }
-        return "";
+        return -1;
     }
 }

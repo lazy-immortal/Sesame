@@ -33,7 +33,6 @@ public class Status {
     private Boolean answerQuestion = false;
     private Map<String, Integer> feedFriendLogList = new HashMap<>();
     private Map<String, Integer> visitFriendLogList = new HashMap<>();
-    private Set<String> dailyAnswerList = new HashSet<>();
     private Set<String> donationEggList = new HashSet<>();
     private int useAccelerateToolCount = 0;
     private Boolean canOrnament = true;
@@ -444,15 +443,6 @@ public class Status {
 
     public static void DoubleToday() {
         INSTANCE.doubleTimes += 1;
-        save();
-    }
-
-    public static Set<String> getDadaDailySet() {
-        return INSTANCE.dailyAnswerList;
-    }
-
-    public static void setDadaDailySet(Set<String> dailyAnswerList) {
-        INSTANCE.dailyAnswerList = dailyAnswerList;
         save();
     }
 

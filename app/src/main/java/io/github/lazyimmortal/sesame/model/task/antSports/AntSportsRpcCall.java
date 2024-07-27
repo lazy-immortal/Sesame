@@ -4,7 +4,7 @@ import io.github.lazyimmortal.sesame.hook.ApplicationHook;
 
 public class AntSportsRpcCall {
     private static final String chInfo = "ch_appcenter__chsub_9patch",
-            timeZone = "Asia\\/Shanghai", version = "3.0.1.2", alipayAppVersion = "0.0.852",
+            timeZone = "Asia/Shanghai", version = "3.0.1.2", alipayAppVersion = "0.0.852",
             cityCode = "330100", appId = "2021002116659397";
 
     private static final String features=                "[\n" +
@@ -231,7 +231,7 @@ public class AntSportsRpcCall {
                 "[{\"bettingPoints\":" + bettingPoints + ",\"guessInstanceId\":\"" + InstanceId
                         + "\",\"guessResultId\":\"" + ResultId
                         + "\",\"newParticipant\":false,\"roundId\":\"" + roundId
-                        + "\",\"stepTimeZone\":\"Asia/Shanghai\"}]");
+                        + "\",\"stepTimeZone\":\"" + timeZone + "\"}]");
     }
 
     public static String pathFeatureQuery() {
@@ -254,7 +254,7 @@ public class AntSportsRpcCall {
         return ApplicationHook.requestString("alipay.tiyubiz.path.map.step.query",
                 "[{\"appId\":\"" + appId + "\",\"countDate\":\"" + countDate
                         + "\",\"pathId\":\""
-                        + pathId + "\",\"timeZone\":\"Asia/Shanghai\"}]");
+                        + pathId + "\",\"timeZone\":\"" + timeZone + "\"}]");
     }
 
     public static String tiyubizGo(String countDate, int goStepCount, String pathId, String userPathRecordId) {
@@ -262,7 +262,7 @@ public class AntSportsRpcCall {
                 "[{\"appId\":\"" + appId + "\",\"countDate\":\"" + countDate
                         + "\",\"goStepCount\":"
                         + goStepCount + ",\"pathId\":\"" + pathId
-                        + "\",\"timeZone\":\"Asia/Shanghai\",\"userPathRecordId\":\""
+                        + "\",\"timeZone\":\"" + timeZone + "\",\"userPathRecordId\":\""
                         + userPathRecordId + "\"}]");
     }
 
@@ -275,7 +275,7 @@ public class AntSportsRpcCall {
     /* 抢好友大战 */
     public static String queryClubHome() {
         return ApplicationHook.requestString("alipay.antsports.club.home.queryClubHome",
-                "[{\"chInfo\":\"healthstep\",\"timeZone\":\"Asia/Shanghai\"}]");
+                "[{\"chInfo\":\"healthstep\",\"timeZone\":\"" + timeZone + "\"}]");
     }
 
     public static String collectBubble(String bubbleId) {

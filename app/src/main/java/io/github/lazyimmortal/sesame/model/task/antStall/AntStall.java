@@ -827,20 +827,24 @@ public class AntStall extends ModelTask {
     // 进入下一村
     private void roadmap() {
         try {
-            String s = AntStallRpcCall.roadmap();
-            JSONObject jo = new JSONObject(s);
-            if (!"SUCCESS".equals(jo.getString("resultCode"))) {
+            String roadmapResponse = AntStallRpcCall.roadmap();
+            JSONObject roadmapJson = new JSONObject(roadmapResponse);
+            if (!"SUCCESS".equals(roadmapJson.getString("resultCode"))) {
                 return;
             }
-            JSONArray roadList = jo.getJSONArray("roadList");
+            JSONArray roadList = roadmapJson.getJSONArray("roadList");
             for (int i = 0; i < roadList.length(); i++) {
                 JSONObject road = roadList.getJSONObject(i);
                 // 检查 status 字段是否为 "NEW"
-                if (!"NEW".equals(road.getString("status"))) {
-                    return;
+                if ("NEW".equals(road.getString("status"))) {
+                    String villageName = road.getString("villageName");
+                    String nextVillageRESPONSE = AntStallRpcCall.nextVillage();
+                    JSONObject nextVillageJson = new JSONObject(nextVillageRESPONSE);
+                    if (!"SUCCESS".equals(nextVillageJson.getString("resultCode"))) {
+                        return;
+                    }
+                    Log.farm("蚂蚁新村⛪[进入:" + villageName + "]成功");
                 }
-                String villageName = road.getString("villageName");
-                Log.farm("蚂蚁新村⛪[进入:" + villageName + "]成功");
             }
         } catch (Throwable t) {
             Log.i(TAG, "roadmap err:");

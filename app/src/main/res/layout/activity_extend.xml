@@ -23,7 +23,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_margin="10dp"
-                                android:background="@drawable/button"
+                                android:background="@drawable/button_extend"
                                 android:textColor="@color/button_text"
                                 android:text="查询树苗余量" />
                         <Button
@@ -32,7 +32,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_margin="10dp"
-                                android:background="@drawable/button"
+                                android:background="@drawable/button_extend"
                                 android:textColor="@color/button_text"
                                 android:text="查询树苗上新" />
                 </LinearLayout>
@@ -65,7 +65,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_margin="10dp"
-                                android:background="@drawable/button"
+                                android:background="@drawable/button_extend"
                                 android:textColor="@color/button_text"
                                 android:text="发送Rpc请求" />
                         <Button
@@ -74,7 +74,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_margin="10dp"
-                                android:background="@drawable/button"
+                                android:background="@drawable/button_extend"
                                 android:textColor="@color/button_text"
                                 android:text="查看请求记录" />
                 </LinearLayout>

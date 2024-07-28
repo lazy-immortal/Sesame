@@ -1067,6 +1067,8 @@ public class AntForestV2 extends ModelTask {
                             if ("SUCCESS".equals(jo.getString("resultCode"))) {
                                 int collectEnergy = jo.optInt("collectEnergy");
                                 Log.forest("额外能量🎄收取[" + collectEnergy + "g]");
+                                totalCollected += collectEnergy;
+                                Statistics.addData(Statistics.DataType.COLLECTED, collectEnergy);
                             }
                         }
                     }
@@ -1150,6 +1152,8 @@ public class AntForestV2 extends ModelTask {
                 TimeUtil.sleep(300);
                 if (jo.optBoolean("success")) {
                     Log.forest("健康医疗🚑[收取能量]#" + energy + "g");
+                    totalCollected += energy;
+                    Statistics.addData(Statistics.DataType.COLLECTED, energy);
                 }
             }
         } catch (Throwable t) {
@@ -1180,6 +1184,8 @@ public class AntForestV2 extends ModelTask {
                         if ("SUCCESS".equals(jo.getString("resultCode"))) {
                             int totalEnergy = jo.getInt("totalEnergy");
                             Log.forest("森林能量⚡[获得:6秒拼手速能量" + totalEnergy + "g]");
+                            totalCollected += totalEnergy;
+                            Statistics.addData(Statistics.DataType.COLLECTED, totalEnergy);
                         }
                     }
                 }
@@ -1568,6 +1574,8 @@ public class AntForestV2 extends ModelTask {
                         new JSONObject(AntForestRpcCall.energyRainSettlement(sum, token)).getString("resultCode"))) {
                     Toast.show("获得了[" + sum + "g]能量[能量雨]");
                     Log.forest("收能量雨🌧️[" + sum + "g]");
+                    totalCollected += sum;
+                    Statistics.addData(Statistics.DataType.COLLECTED, sum);
                 }
                 TimeUtil.sleep(500);
             }

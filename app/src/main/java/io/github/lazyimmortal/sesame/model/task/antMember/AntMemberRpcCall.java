@@ -2,6 +2,9 @@ package io.github.lazyimmortal.sesame.model.task.antMember;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.UUID;
+
 import io.github.lazyimmortal.sesame.entity.RpcEntity;
 import io.github.lazyimmortal.sesame.hook.ApplicationHook;
 import io.github.lazyimmortal.sesame.util.RandomUtil;
@@ -10,6 +13,68 @@ public class AntMemberRpcCall {
 
     private static String getUniqueId() {
         return String.valueOf(System.currentTimeMillis()) + RandomUtil.nextLong();
+    }
+
+    public static String queryDeliveryZoneDetail(String userId){
+        String args1 = "[\n" +
+                "    {\n" +
+                "        \"cityCode\": \"450100\",\n" +
+                "        \"deliveryId\": \"94000SR2023102305988003\",\n" +
+                "        \"pageNum\": 1,\n" +
+                "        \"pageSize\": 18,\n" +
+                "        \"sourcePassMap\": {\n" +
+                "            \"innerSource\": \"\",\n" +
+                "            \"source\": \"ch_appcenter__chsub_9patch\",\n" +
+                "            \"unid\": \"\"\n" +
+                "        },\n" +
+                "        \"topIdList\": [],\n" +
+                "        \"uniqueId\": \""+System.currentTimeMillis()+"全积分0and99999999INTELLIGENT_SORT"+userId+"\"\n" +
+                "    }\n" +
+                "]";
+
+
+        return ApplicationHook.requestString("com.alipay.alipaymember.biz.rpc.config.h5.queryDeliveryZoneDetail", args1);
+    }
+    public static String exchangeBenefit(String benefitId,String itemId,String userId,int index){
+        String args1 = "[\n" +
+                "    {\n" +
+                "        \"benefitId\": \""+benefitId+"\",\n" +
+                "        \"cityCode\": \"450100\",\n" +
+                "        \"exchangeType\": \"POINT_PAY\",\n" +
+                "        \"itemId\": \""+itemId+"\",\n" +
+                "        \"miniAppId\": \"\",\n" +
+                "        \"orderSource\": \"\",\n" +
+                "        \"requestId\": \"requestId"+System.currentTimeMillis()+"\",\n" +
+                "        \"requestSourceInfo\": \"SID:"+System.currentTimeMillis()+"全积分0and99999999INTELLIGENT_SORT"+userId+"|"+index+"\",\n" +
+                "        \"sourcePassMap\": {\n" +
+                "            \"alipayClientVersion\": \"10.6.20.8000\",\n" +
+                "            \"bid\": \"\",\n" +
+                "            \"feedsIndex\": \""+index+"\",\n" +
+                "            \"innerSource\": \"feeds\",\n" +
+                "            \"isCpc\": \"\",\n" +
+                "            \"mobileOsType\": \"Android\",\n" +
+                "            \"source\": \"ch_appcenter__chsub_9patch\",\n" +
+                "            \"unid\": \""+generateFormattedUUID()+"\",\n" +
+                "            \"uniqueId\": \""+System.currentTimeMillis()+"全积分0and99999999INTELLIGENT_SORT"+userId+"\"\n" +
+                "        },\n" +
+                "        \"userOutAccount\": \"\"\n" +
+                "    }\n" +
+                "]";
+        return ApplicationHook.requestString("com.alipay.alipaymember.biz.rpc.exchange.h5.exchangeBenefit", args1);
+    }
+    public static String generateFormattedUUID() {
+        // 生成随机的UUID
+        UUID uuid = UUID.randomUUID();
+
+        // 格式化UUID为指定的格式
+        String formattedUUID = String.format("%s-%s-%s-%s-%s",
+                uuid.toString().substring(0, 8),
+                uuid.toString().substring(8, 12),
+                uuid.toString().substring(12, 16),
+                uuid.toString().substring(16, 20),
+                uuid.toString().substring(20));
+
+        return formattedUUID;
     }
 
     public static Boolean check() {

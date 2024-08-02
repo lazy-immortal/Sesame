@@ -5,8 +5,10 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
+import io.github.lazyimmortal.sesame.entity.AlipayVersion;
 import io.github.lazyimmortal.sesame.entity.RpcEntity;
 import io.github.lazyimmortal.sesame.hook.ApplicationHook;
+import io.github.lazyimmortal.sesame.util.Log;
 import io.github.lazyimmortal.sesame.util.RandomUtil;
 
 public class AntMemberRpcCall {
@@ -36,6 +38,7 @@ public class AntMemberRpcCall {
         return ApplicationHook.requestString("com.alipay.alipaymember.biz.rpc.config.h5.queryDeliveryZoneDetail", args1);
     }
     public static String exchangeBenefit(String benefitId,String itemId,String userId,int index){
+        AlipayVersion alipayVersion = ApplicationHook.getAlipayVersion();
         String args1 = "[\n" +
                 "    {\n" +
                 "        \"benefitId\": \""+benefitId+"\",\n" +
@@ -47,7 +50,7 @@ public class AntMemberRpcCall {
                 "        \"requestId\": \"requestId"+System.currentTimeMillis()+"\",\n" +
                 "        \"requestSourceInfo\": \"SID:"+System.currentTimeMillis()+"全积分0and99999999INTELLIGENT_SORT"+userId+"|"+index+"\",\n" +
                 "        \"sourcePassMap\": {\n" +
-                "            \"alipayClientVersion\": \"10.6.20.8000\",\n" +
+                "            \"alipayClientVersion\": \""+alipayVersion.getVersionString()+"\",\n" +
                 "            \"bid\": \"\",\n" +
                 "            \"feedsIndex\": \""+index+"\",\n" +
                 "            \"innerSource\": \"feeds\",\n" +

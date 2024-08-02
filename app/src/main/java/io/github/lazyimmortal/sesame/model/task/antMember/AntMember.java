@@ -118,6 +118,9 @@ public class AntMember extends ModelTask {
             String s = AntMemberRpcCall.queryDeliveryZoneDetail(userId);
             JSONObject jo = new JSONObject(s);
             if(jo.getBoolean("success")){
+                if (jo.has("entityInfoList")){
+                    return;
+                }
                 JSONArray entityInfoList = jo.getJSONArray("entityInfoList");
                 for (int i = 0; i < entityInfoList.length(); i++) {
                     JSONObject entityInfoDetail = entityInfoList.getJSONObject(i);

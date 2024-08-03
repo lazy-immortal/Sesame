@@ -134,12 +134,17 @@ public class AntMember extends ModelTask {
                     String point = pricePresentation.getString("point");
 
                     if(catCode.equals("zhihuan_1")){
-                        s = AntMemberRpcCall.exchangeBenefit(benefitId,itemId,userId,i);
-                        jo = new JSONObject(s);
-                        if(jo.getBoolean("success")){
-                            Log.record("会员积分兑换道具["+name+"*1]#花费"+point+"积分");
-                        }else {
+                        if (name.contains("农场") || name.contains("庄园") || name.contains("森林") || name.contains("神奇物种")) {
+
+                            Log.record("道具名称："+name + "，积分："+point);
+
+                            s = AntMemberRpcCall.exchangeBenefit(benefitId,itemId,userId,i);
+                            jo = new JSONObject(s);
+                            if(jo.getBoolean("success")){
+                                Log.record("会员积分兑换道具["+name+"*1]#花费"+point+"积分");
+                            }else {
 //                            Log.record(jo.toString());
+                            }
                         }
                     }
                 }

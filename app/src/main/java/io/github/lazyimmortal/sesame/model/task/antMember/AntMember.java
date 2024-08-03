@@ -135,9 +135,6 @@ public class AntMember extends ModelTask {
 
                     if(catCode.equals("zhihuan_1")){
                         if (name.contains("农场") || name.contains("庄园") || name.contains("森林") || name.contains("神奇物种")) {
-
-                            Log.record("道具名称："+name + "，积分："+point);
-
                             s = AntMemberRpcCall.exchangeBenefit(benefitId,itemId,userId,i);
                             jo = new JSONObject(s);
                             if(jo.getBoolean("success")){

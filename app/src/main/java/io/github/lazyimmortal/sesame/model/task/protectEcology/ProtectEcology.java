@@ -350,18 +350,19 @@ public class ProtectEcology extends ModelTask {
                 Log.record("生态保护🏕️保护[" + exchangeableTree.projectName + "]停止:能量不足");
                 return exchangeableTree;
             }
-            if (Objects.equals("ANIMAL", jo.getString("type"))
-                    && exchangeableTree.certCount == 0) {
-                for (int i = 0; i < subTreeVOs.length(); i++) {
-                    jo = subTreeVOs.getJSONObject(i);
-                    int certCountForAlias = jo.getInt("certCountForAlias");
-                    if (certCountForAlias == 0) {
-                        exchangeableTree.canExchange = true;
-                        break;
+            if (Objects.equals("ANIMAL", jo.getString("type"))) {
+                if (exchangeableTree.certCount == 0) {
+                    for (int i = 0; i < subTreeVOs.length(); i++) {
+                        jo = subTreeVOs.getJSONObject(i);
+                        int certCountForAlias = jo.getInt("certCountForAlias");
+                        if (certCountForAlias == 0) {
+                            exchangeableTree.canExchange = true;
+                            break;
+                        }
                     }
-                }
-                if (!exchangeableTree.canExchange) {
-                    applyGoldAnimalCert(projectId);
+                    if (!exchangeableTree.canExchange) {
+                        applyGoldAnimalCert(projectId);
+                    }
                 }
             } else exchangeableTree.canExchange = true;
         } catch (Throwable t) {

@@ -17,6 +17,7 @@ import io.github.lazyimmortal.sesame.data.*;
 import io.github.lazyimmortal.sesame.data.modelFieldExt.common.SelectModelFieldFunc;
 import io.github.lazyimmortal.sesame.data.task.ModelTask;
 import io.github.lazyimmortal.sesame.entity.AlipayUser;
+import io.github.lazyimmortal.sesame.model.extend.ExtendHandle;
 import io.github.lazyimmortal.sesame.ui.dto.ModelDto;
 import io.github.lazyimmortal.sesame.ui.dto.ModelFieldInfoDto;
 import io.github.lazyimmortal.sesame.ui.dto.ModelFieldShowDto;
@@ -114,6 +115,7 @@ public class NewSettingsActivity extends BaseActivity {
                 // 强制在当前 WebView 中加载 url
                 Uri requestUrl = request.getUrl();
                 String scheme = requestUrl.getScheme();
+                assert scheme != null;
                 if (
                         scheme.equalsIgnoreCase("http")
                                 || scheme.equalsIgnoreCase("https")
@@ -133,10 +135,13 @@ public class NewSettingsActivity extends BaseActivity {
             WebView.setWebContentsDebuggingEnabled(true);
         }
         webView.addJavascriptInterface(new WebViewCallback(), "HOOK");
-        String htmlData = AESUtil.loadDecryptHtmlData(context);
-        webView.loadDataWithBaseURL("file:///android_asset/web/", htmlData, "text/html", "UTF-8", null);
-//        webView.loadUrl("file:///android_asset/web/index.html");
+        if (!ExtendHandle.handleAlphaRequest("webView", "load", "html")) {
+            String htmlData = AESUtil.loadDecryptHtmlData(context);
+            webView.loadDataWithBaseURL("file:///android_asset/web/", htmlData, "text/html", "UTF-8", null);
+        } else {
+            webView.loadUrl("file:///android_asset/web/index.html");
 //        webView.loadUrl("http://192.168.31.32:5500/app/src/main/assets/web/index.html");
+        }
         webView.requestFocus();
 
         Map<String, ModelConfig> modelConfigMap = ModelTask.getModelConfigMap();

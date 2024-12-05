@@ -142,20 +142,19 @@ public class ProtectEcology extends ModelTask {
             if (cultivationList == null) {
                 return;
             }
+            BeachIdMap.load();
             for (int i = 0; i < cultivationList.length(); i++) {
                 JSONObject jo = cultivationList.getJSONObject(i);
-                if (Objects.equals("AVAILABLE", jo.getString("applyAction"))) {
+                if (!Objects.equals("AVAILABLE", jo.getString("applyAction"))) {
                     continue;
                 }
-                if (Objects.equals("BEACH", jo.optString("templateSubType"))) {
-                    BeachIdMap.add(jo.getString("templateCode"), jo.getString("cultivationName") + "(" + jo.getInt("energy") + "g)");
-                } else if (Objects.equals("COOPERATE_PLANT", jo.getString("templateType"))) {
-                    BeachIdMap.add(jo.getString("templateCode"), jo.getString("cultivationName") + "(" + jo.getInt("energy") + "g)");
-                } else if (Objects.equals("PROTECT", jo.getString("templateType"))) {
+                if (Objects.equals("BEACH", jo.optString("templateSubType"))
+                        || Objects.equals("COOPERATE_PLANT", jo.getString("templateType"))
+                        || Objects.equals("PROTECT", jo.getString("templateType"))) {
                     BeachIdMap.add(jo.getString("templateCode"), jo.getString("cultivationName") + "(" + jo.getInt("energy") + "g)");
                 }
             }
-            BeachIdMap.load();
+            BeachIdMap.save();
         } catch (Throwable t) {
             Log.i(TAG, "initOcean err:");
             Log.printStackTrace(TAG, t);
@@ -318,7 +317,7 @@ public class ProtectEcology extends ModelTask {
 
     public static JSONArray queryTreeItemsForExchange(String applyActions, String itemTypes) {
         try {
-            JSONObject jo = new JSONObject(ProtectEcologyRpcCall.queryTreeItemsForExchange(applyActions, itemTypes));
+            JSONObject jo = new JSONObject(ProtectTreeRpcCall.queryTreeItemsForExchange(applyActions, itemTypes));
             if (MessageUtil.checkResultCode(TAG, jo)) {
                 return jo.getJSONArray("treeItems");
             }

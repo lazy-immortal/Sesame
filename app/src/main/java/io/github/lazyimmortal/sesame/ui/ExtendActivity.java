@@ -1,24 +1,17 @@
 package io.github.lazyimmortal.sesame.ui;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 
 import android.net.Uri;
-import android.os.Build;
 
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import io.github.lazyimmortal.sesame.hook.ApplicationHook;
 import io.github.lazyimmortal.sesame.R;
 import io.github.lazyimmortal.sesame.util.*;
 
@@ -27,6 +20,7 @@ public class ExtendActivity extends BaseActivity {
     Button btnGetTreeItems, btnGetNewTreeItems;
     Button btnQueryAreaTrees, btnGetUnlockTreeItems;
     Button btnSetCustomWalkPathId, btnSetCustomWalkPathIdQueue;
+    Button btnCollectHistoryAnimal;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -38,13 +32,14 @@ public class ExtendActivity extends BaseActivity {
         btnGetUnlockTreeItems = findViewById(R.id.get_unlock_treeItems);
         btnSetCustomWalkPathId = findViewById(R.id.set_custom_walk_path_id);
         btnSetCustomWalkPathIdQueue = findViewById(R.id.set_custom_walk_path_id_queue);
+        btnCollectHistoryAnimal = findViewById(R.id.collect_history_animal);
 
         setBaseTitle("扩展功能");
 
         btnGetTreeItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public final void onClick(View view) {
-                sendItemsBroadcast("getTreeItems");
+                sendItemsBroadcast("getTreeItems", "", "");
                 Toast.makeText(ExtendActivity.this, "已发送查询请求，请在森林日志查看结果！", Toast.LENGTH_SHORT).show();
             }
         });
@@ -52,7 +47,7 @@ public class ExtendActivity extends BaseActivity {
         btnGetNewTreeItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public final void onClick(View view) {
-                sendItemsBroadcast("getNewTreeItems");
+                sendItemsBroadcast("getNewTreeItems", "", "");
                 Toast.makeText(ExtendActivity.this, "已发送查询请求，请在森林日志查看结果！", Toast.LENGTH_SHORT).show();
             }
         });
@@ -60,7 +55,7 @@ public class ExtendActivity extends BaseActivity {
         btnQueryAreaTrees.setOnClickListener(new View.OnClickListener() {
             @Override
             public final void onClick(View view) {
-                sendItemsBroadcast("queryAreaTrees");
+                sendItemsBroadcast("queryAreaTrees", "", "");
                 Toast.makeText(ExtendActivity.this, "已发送查询请求，请在森林日志查看结果！", Toast.LENGTH_SHORT).show();
             }
         });
@@ -68,8 +63,15 @@ public class ExtendActivity extends BaseActivity {
         btnGetUnlockTreeItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public final void onClick(View view) {
-                sendItemsBroadcast("getUnlockTreeItems");
+                sendItemsBroadcast("getUnlockTreeItems", "", "");
                 Toast.makeText(ExtendActivity.this, "已发送查询请求，请在森林日志查看结果！", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnCollectHistoryAnimal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public final void onClick(View view) {
+                sendItemsBroadcast("collectHistoryAnimal", "", "");
             }
         });
 
@@ -82,9 +84,9 @@ public class ExtendActivity extends BaseActivity {
                     .setView(input)
                     .setPositiveButton("修改", (dialog, which) -> {
                         String text = input.getText().toString().trim();
-                        sendItemsBroadcast(text, "setCustomWalkPathId");
+                        sendItemsBroadcast("setCustomWalkPathId", "setCustomWalkPathId", text);
                     }).setNegativeButton("清除", (dialog, which) -> {
-                        sendItemsBroadcast("", "setCustomWalkPathId");
+                        sendItemsBroadcast("setCustomWalkPathId", "clearCustomWalkPathId", "");
                     }).show();
         });
         btnSetCustomWalkPathIdQueue.setOnClickListener(v -> {
@@ -96,27 +98,18 @@ public class ExtendActivity extends BaseActivity {
                     .setView(input)
                     .setPositiveButton("添加", (dialog, which) -> {
                         String text = input.getText().toString().trim();
-                        sendItemsBroadcast(text, "addCustomWalkPathIdQueue");
+                        sendItemsBroadcast("addCustomWalkPathIdQueue", "", text);
                     }).setNegativeButton("清除", (dialog, which) -> {
-                        sendItemsBroadcast("clearCustomWalkPathIdQueue");
+                        sendItemsBroadcast("clearCustomWalkPathIdQueue", "", "");
                     }).show();
         });
     }
 
-    private void sendItemsBroadcast(String type) {
+    private void sendItemsBroadcast(String type, String method, String data) {
         Intent intent = new Intent("com.eg.android.AlipayGphone.sesame.rpctest");
-        intent.putExtra("method", "");
-        intent.putExtra("data", "");
         intent.putExtra("type", type);
-        sendBroadcast(intent);
-    }
-
-    private void sendItemsBroadcast(String data, String type) {
-        Intent intent = new Intent("com.eg.android.AlipayGphone.sesame.rpctest");
-        intent.putExtra("method", "");
+        intent.putExtra("method", method);
         intent.putExtra("data", data);
-        intent.putExtra("type", type);
         sendBroadcast(intent);
     }
-
 }

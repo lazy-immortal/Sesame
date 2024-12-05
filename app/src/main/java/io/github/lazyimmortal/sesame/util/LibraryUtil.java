@@ -21,6 +21,16 @@ public class LibraryUtil {
         return libSesamePath;
     }
 
+    public static Boolean loadLibrary(String libraryName) {
+        try {
+            System.loadLibrary(libraryName);
+            return true;
+        } catch (UnsatisfiedLinkError e) {
+            return false;
+        }
+    }
+
+
     // native code
     private static native boolean libraryCheckFarmTaskStatus(JSONObject task);
     public static Boolean checkFarmTaskStatus(JSONObject task) {

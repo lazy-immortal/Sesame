@@ -12,12 +12,14 @@ import io.github.lazyimmortal.sesame.entity.CustomOption;
 import io.github.lazyimmortal.sesame.entity.MemberBenefit;
 import io.github.lazyimmortal.sesame.entity.PromiseSimpleTemplate;
 import io.github.lazyimmortal.sesame.model.base.TaskCommon;
+import io.github.lazyimmortal.sesame.model.extend.ExtendHandle;
 import io.github.lazyimmortal.sesame.util.*;
 import io.github.lazyimmortal.sesame.util.idMap.MemberBenefitIdMap;
 import io.github.lazyimmortal.sesame.util.idMap.PromiseSimpleTemplateIdMap;
 import io.github.lazyimmortal.sesame.util.idMap.UserIdMap;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 
 public class AntMember extends ModelTask {
     private static final String TAG = AntMember.class.getSimpleName();
@@ -194,8 +196,11 @@ public class AntMember extends ModelTask {
                 for (int i = 0; i < categoryTaskList.length(); i++) {
                     jo = categoryTaskList.getJSONObject(i);
                     JSONArray taskList = jo.getJSONArray("taskList");
-                    if ("BROWSE".equals(jo.getString("type"))) {
+                    String type = jo.getString("type");
+                    if (Objects.equals("BROWSE", type)) {
                         doubleCheck = doBrowseTask(taskList);
+                    } else {
+                        ExtendHandle.handleAlphaRequest("doAntMemberMoreTask", type, taskList.toString());
                     }
                 }
                 if (doubleCheck) {

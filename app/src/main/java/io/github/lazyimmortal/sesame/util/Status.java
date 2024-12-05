@@ -144,7 +144,7 @@ public class Status {
     }
 
     public static Boolean canFeedFriendToday(String id, int countLimit) {
-        return getFeedFriendCountToday(id) < countLimit;
+        return !hasFlagToday("farm::feedFriendAnimalLimit") && getFeedFriendCountToday(id) < countLimit;
     }
 
     public static void feedFriendToday(String id) {

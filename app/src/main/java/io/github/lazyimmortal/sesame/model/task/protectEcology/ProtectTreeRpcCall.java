@@ -8,11 +8,23 @@ public class ProtectTreeRpcCall {
     private static final String VERSION = "20230501";
     private static final String VERSION2 = "20230522";
 
+    /* 查询地图树苗 */
+    public static String queryAreaTrees() {
+        return ApplicationHook.requestString("alipay.antmember.forest.h5.queryAreaTrees", "[{}]");
+    }
+
     public static String queryTreeItemsForExchange() {
         return ApplicationHook.requestString("alipay.antforest.forest.h5.queryTreeItemsForExchange", "[{}]");
     }
 
-    public static String queryTreeForExchange(int projectId) {
+    public static String queryTreeItemsForExchange(String applyActions, String itemTypes) {
+        // "applyActions": "LIMITED,NO_STOCK,AVAILABLE,ENERGY_LACK,COMING"
+        // "itemTypes": "project,special"
+        String args = "[{\"applyActions\":\"" + applyActions + "\",\"itemTypes\":\"" + itemTypes + "\"}]";
+        return ApplicationHook.requestString("alipay.antforest.forest.h5.queryTreeItemsForExchange", args);
+    }
+
+    public static String queryTreeForExchange(Object projectId) {
         String args = "[{\"projectId\":\"" + projectId + "\"}]";
         return ApplicationHook.requestString("alipay.antforest.forest.h5.queryTreeForExchange", args);
     }

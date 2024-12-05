@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+import io.github.lazyimmortal.sesame.model.extend.ExtendHandle;
 import io.github.lazyimmortal.sesame.util.Log;
 import io.github.lazyimmortal.sesame.util.MessageUtil;
 import io.github.lazyimmortal.sesame.util.Status;
@@ -64,6 +65,7 @@ public class MerchantService {
 
     public static void taskListQueryV2() {
         zcjSignIn();
+        ExtendHandle.handleAlphaRequest("doMerchantServiceHideTask", "", "");
         try {
             JSONObject jo = new JSONObject(MerchantServiceRpcCall.taskListQueryV2());
             if (!MessageUtil.checkSuccess(TAG, jo)) {

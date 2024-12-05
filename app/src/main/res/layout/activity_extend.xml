@@ -66,6 +66,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp">
                         <Button
+                            android:id="@+id/collect_history_animal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/button_extend"
+                            android:textColor="@color/button_text"
+                            android:text="收集历史物种🦕" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+                        <Button
                             android:id="@+id/set_custom_walk_path_id"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

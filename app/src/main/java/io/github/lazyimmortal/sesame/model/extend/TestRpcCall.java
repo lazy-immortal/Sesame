@@ -1,4 +1,4 @@
-package io.github.lazyimmortal.sesame.model.testRpc;
+package io.github.lazyimmortal.sesame.model.extend;
 
 import io.github.lazyimmortal.sesame.hook.ApplicationHook;
 

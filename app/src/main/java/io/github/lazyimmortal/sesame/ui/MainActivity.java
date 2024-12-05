@@ -52,10 +52,6 @@ public class MainActivity extends BaseActivity {
 
     private UserEntity[] userEntityArray = {null};
 
-    static {
-        System.loadLibrary("sesame");
-    }
-
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -389,7 +385,8 @@ public class MainActivity extends BaseActivity {
 
     private void goSettingActivity(int index) {
         UserEntity userEntity = userEntityArray[index];
-        Intent intent = new Intent(this, AppConfig.INSTANCE.getNewUI() && !"TEST".equals(ViewAppInfo.getAppVersion()) ? NewSettingsActivity.class : SettingsActivity.class);
+        boolean isNewUI = AppConfig.INSTANCE.getNewUI() && !"TEST".equals(ViewAppInfo.getAppVersion()) && LibraryUtil.loadLibrary("sesame");
+        Intent intent = new Intent(this, isNewUI ? NewSettingsActivity.class : SettingsActivity.class);
         if (userEntity != null) {
             intent.putExtra("userId", userEntity.getUserId());
             intent.putExtra("userName", userEntity.getShowName());

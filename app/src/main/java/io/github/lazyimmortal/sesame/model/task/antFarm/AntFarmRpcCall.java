@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import io.github.lazyimmortal.sesame.hook.ApplicationHook;
 import io.github.lazyimmortal.sesame.util.RandomUtil;
+import io.github.lazyimmortal.sesame.util.StringUtil;
 
 public class AntFarmRpcCall {
     private static final String VERSION = "1.8.2302070202.46";
@@ -56,8 +57,7 @@ public class AntFarmRpcCall {
 
     public static String queryLoveCabin(String userId) {
         String args = "[{\"requestType\":\"RPC\",\"sceneCode\":\"ANTFARM\",\"source\":\"LOVECABIN\",\"userId\":\"" + userId + "\"}]";
-//        String args1 = "[{\"requestType\":\"NORMAL\",\"sceneCode\":\"ANTFARM\",\"source\":\"ENTERFARM\",\"userId\":\"" +
-//                userId + "\",\"version\":\"" + VERSION + "\"}]";
+//        String args1 = "[{\"requestType\":\"NORMAL\",\"sceneCode\":\"ANTFARM\",\"source\":\"ENTERFARM\",\"userId\":\"" + userId + "\"}]";
         return ApplicationHook.requestString("com.alipay.antfarm.queryLoveCabin", args);
     }
 
@@ -195,10 +195,16 @@ public class AntFarmRpcCall {
     }
 
     public static String feedFriendAnimal(String friendFarmId) {
-        String args1 = "[{\"animalType\":\"CHICK\",\"canMock\":true,\"friendFarmId\":\"" + friendFarmId +
-                "\",\"requestType\":\"NORMAL\",\"sceneCode\":\"ANTFARM\",\"source\":\"H5\",\"version\":\""
-                + VERSION + "\"}]";
-        return ApplicationHook.requestString("com.alipay.antfarm.feedFriendAnimal", args1);
+        String args = "[{\"friendFarmId\":\"" + friendFarmId + "\",\"requestType\":\"NORMAL\",\"sceneCode\":\"ANTFARM\",\"source\":\"H5\"}]";
+        return ApplicationHook.requestString("com.alipay.antfarm.feedFriendAnimal", args);
+    }
+
+    public static String feedFriendAnimal(String friendFarmId, String groupId) {
+        if (StringUtil.isEmpty(groupId)) {
+            return feedFriendAnimal(friendFarmId);
+        }
+        String args = "[{\"friendFarmId\":\"" + friendFarmId + "\",\"groupId\":\"" + groupId + "\",\"requestType\":\"NORMAL\",\"sceneCode\":\"ChickFamily\",\"source\":\"H5\",\"spaceType\":\"ChickFamily\"}]";
+        return ApplicationHook.requestString("com.alipay.antfarm.feedFriendAnimal", args);
     }
 
     public static String farmId2UserId(String farmId) {
@@ -473,11 +479,6 @@ public class AntFarmRpcCall {
     public static String enterFamily() {
         String args = "[{\"fromAnn\":false,\"requestType\":\"NORMAL\",\"sceneCode\":\"ANTFARM\",\"source\":\"H5\"}]";
         return ApplicationHook.requestString("com.alipay.antfarm.enterFamily", args);
-    }
-
-    public static String familyFeedFriendAnimal(String groupId, String friendFarmId) {
-        String args = "[{\"friendFarmId\":\"" + friendFarmId + "\",\"groupId\":\"" + groupId + "\",\"requestType\":\"NORMAL\",\"sceneCode\":\"ChickFamily\",\"source\":\"H5\",\"spaceType\":\"ChickFamily\"}]";
-        return ApplicationHook.requestString("com.alipay.antfarm.feedFriendAnimal", args);
     }
 
     /**

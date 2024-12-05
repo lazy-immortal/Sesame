@@ -94,18 +94,17 @@ public class AnswerAI extends Model {
     public static String getAnswer(String text, List<String> answerList) {
         String answerStr = "";
         try {
+            Log.record("知识问答🧠题目[" + text + "]#选项" + answerList);
             if (enable) {
-                Log.record("AI🧠答题，题目：[" + text + "]选项：" + answerList);
                 Integer answer = answerAIInterface.getAnswer(text, answerList);
                 if (answer != null && answer >= 0 && answer < answerList.size()) {
                     answerStr = answerList.get(answer);
-                    Log.record("AI🧠回答：" + answerStr);
+                    Log.record("智能回答🧠[" + answerStr + "]");
                 }
             } else {
-                Log.record("普通答题，题目：[" + text + "]选项：" + answerList);
                 if (!answerList.isEmpty()) {
                     answerStr = answerList.get(0);
-                    Log.record("普通回答：" + answerStr);
+                    Log.record("普通回答🤖[" + answerStr + "]");
                 }
             }
         } catch (Throwable t) {

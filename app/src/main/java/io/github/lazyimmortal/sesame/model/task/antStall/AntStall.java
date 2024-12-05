@@ -944,12 +944,15 @@ public class AntStall extends ModelTask {
         }
     }
 
-    private void throwManure(JSONArray dynamicList) {
+    private Boolean throwManure(JSONArray dynamicList) {
         try {
             JSONObject jo = new JSONObject(AntStallRpcCall.throwManure(dynamicList));
             if (MessageUtil.checkResultCode(TAG, jo)) {
                 int income = jo.getInt("income");
                 Log.farm("蚂蚁新村⛪一键丢肥料#讨回[" + income + "木兰币]");
+                return true;
+            } else if (Objects.equals("B_OVER_LIMIT_COUNT_OF_THROW_FROM", jo.optString("resultCode"))) {
+                Status.flagToday("stall::throwManureLimit");
             }
         } catch (Throwable th) {
             Log.i(TAG, "throwManure err:");
@@ -957,9 +960,13 @@ public class AntStall extends ModelTask {
         } finally {
             TimeUtil.sleep(1000);
         }
+        return false;
     }
 
     private void throwManure() {
+        if (Status.hasFlagToday("stall::throwManureLimit")) {
+            return;
+        }
         try {
             JSONObject jo = new JSONObject(AntStallRpcCall.dynamicLoss());
             if (!MessageUtil.checkResultCode(TAG, jo)) {
@@ -985,7 +992,9 @@ public class AntStall extends ModelTask {
                 dynamic.put("bizType", lossDynamic.getString("bizType"));
                 dynamicList.put(dynamic);
                 if (dynamicList.length() == 5) {
-                    throwManure(dynamicList);
+                    if (!throwManure(dynamicList)) {
+                        return;
+                    }
                     dynamicList = new JSONArray();
                 }
             }

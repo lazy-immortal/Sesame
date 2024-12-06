@@ -27,6 +27,7 @@ import io.github.lazyimmortal.sesame.entity.AlipayUser;
 import io.github.lazyimmortal.sesame.entity.CooperateUser;
 import io.github.lazyimmortal.sesame.entity.FriendWatch;
 import io.github.lazyimmortal.sesame.entity.IdAndName;
+import io.github.lazyimmortal.sesame.entity.WalkPath;
 import io.github.lazyimmortal.sesame.util.idMap.*;
 
 import java.util.List;
@@ -222,10 +223,11 @@ public class ListDialog {
                                 })
                                 .setNegativeButton(c.getString(R.string.cancel), null)
                                 .create();
-                        if (curIdAndName instanceof CooperateUser
-                                || curIdAndName instanceof AlipayMarathon
-                                || curIdAndName instanceof AlipayNewAncientTree)
+                        if (curIdAndName instanceof CooperateUser)
                             edt_count.setHint("浇水克数");
+                        else if (curIdAndName instanceof AlipayMarathon
+                                || curIdAndName instanceof AlipayNewAncientTree)
+                            edt_count.setHint("助力克数");
                         else
                             edt_count.setHint("次数");
                         Integer value = selectModelFieldFunc.get(curIdAndName.id);
@@ -244,7 +246,9 @@ public class ListDialog {
                             || (curIdAndName instanceof AlipayAnimal)
                             || (curIdAndName instanceof AlipayMarathon)
                             || (curIdAndName instanceof AlipayNewAncientTree)
-                            || (curIdAndName instanceof AlipayBeach)) {
+                            || (curIdAndName instanceof AlipayBeach)
+                            || (curIdAndName instanceof WalkPath)
+                    ) {
                         try {
                             new AlertDialog.Builder(c)
                                     .setTitle("删除 " + curIdAndName.name)
@@ -274,6 +278,10 @@ public class ListDialog {
                                                 AlipayBeach.remove(curIdAndName.id);
                                                 BeachIdMap.remove(curIdAndName.id);
                                                 BeachIdMap.save();
+                                            } else if (curIdAndName instanceof WalkPath) {
+                                                WalkPath.remove(curIdAndName.id);
+                                                WalkPathIdMap.remove(curIdAndName.id);
+                                                WalkPathIdMap.save();
                                             }
                                             selectModelFieldFunc.remove(curIdAndName.id);
                                             ListAdapter.get(c).exitFind();

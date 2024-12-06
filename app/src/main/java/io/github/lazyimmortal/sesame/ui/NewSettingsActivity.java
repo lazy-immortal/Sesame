@@ -82,6 +82,7 @@ public class NewSettingsActivity extends BaseActivity {
         MarathonIdMap.load();
         NewAncientTreeIdMap.load();
         BeachIdMap.load();
+        WalkPathIdMap.load();
         ConfigV2.load(userId);
         LanguageUtil.setLocale(this);
         setContentView(R.layout.activity_new_settings);

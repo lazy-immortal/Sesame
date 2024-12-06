@@ -4,20 +4,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 import io.github.lazyimmortal.sesame.data.TokenConfig;
 import io.github.lazyimmortal.sesame.hook.Toast;
-import io.github.lazyimmortal.sesame.model.task.antDodo.AntDodo;
-import io.github.lazyimmortal.sesame.model.task.antDodo.AntDodoRpcCall;
-import io.github.lazyimmortal.sesame.model.task.antForest.AntForestV2;
 import io.github.lazyimmortal.sesame.model.task.antSports.AntSportsRpcCall;
 import io.github.lazyimmortal.sesame.model.task.protectEcology.ProtectTreeRpcCall;
 import io.github.lazyimmortal.sesame.util.Log;
 import io.github.lazyimmortal.sesame.util.MessageUtil;
 import io.github.lazyimmortal.sesame.util.StringUtil;
 import io.github.lazyimmortal.sesame.util.TimeUtil;
-import io.github.lazyimmortal.sesame.util.idMap.UserIdMap;
+import io.github.lazyimmortal.sesame.util.idMap.WalkPathIdMap;
 
 public class ExtendHandle {
     private static final String TAG = ExtendHandle.class.getSimpleName();
@@ -39,11 +35,8 @@ public class ExtendHandle {
             case "getUnlockTreeItems":
                 getUnlockTreeItems();
                 break;
-            case "collectHistoryAnimal":
-                collectHistoryAnimal();
-                break;
-            case "setCustomWalkPathId":
-                setCustomWalkPathId(data);
+            case "setCustomWalkPathIdList":
+                addCustomWalkPathIdList(data);
                 break;
             case "addCustomWalkPathIdQueue":
                 addCustomWalkPathIdQueue(data);
@@ -198,109 +191,17 @@ public class ExtendHandle {
         }
     }
 
-    // 检查是否需要收集历史物种
-    private static Boolean canCollectHistoryAnimal() {
-        // 图鉴合成状态 合成 可以合成 不能合成
-        // medalGenerationStatus: GENERATED CAN_GENERATE CAN_NOT_GENERATE
-        try {
-            boolean hasMore;
-            int pageStart = 0;
-            do {
-                JSONObject jo = new JSONObject(AntDodoRpcCall.queryBookList(9, pageStart));
-                if (!MessageUtil.checkResultCode(TAG, jo)) {
-                    break;
-                }
-                jo = jo.getJSONObject("data");
-                hasMore = jo.getBoolean("hasMore");
-                pageStart += 9;
-                JSONArray bookForUserList = jo.getJSONArray("bookForUserList");
-                for (int i = 0; i < bookForUserList.length(); i++) {
-                    if (i == 0 && pageStart == 9) {
-                        // 忽略当前专辑
-                        continue;
-                    }
-                    jo = bookForUserList.getJSONObject(i);
-                    if (!AntDodo.MedalGenerationStatus.CAN_NOT_GENERATE.name().equals(
-                            jo.optString("medalGenerationStatus"))) {
-                        continue;
-                    }
-                    return true;
-                }
-            } while (hasMore);}
-        catch (Throwable t) {
-            Log.i(TAG, "collectHistoryAnimal err:");
-            Log.printStackTrace(TAG, t);
-        }
-        return false;
-    }
-
-    private static void usePropCollectHistoryAnimal() {
-        try {
-            JSONObject jo = new JSONObject(AntDodoRpcCall.propList());
-            if (!MessageUtil.checkResultCode(TAG, jo)) {
-                return;
-            }
-            JSONArray propList = jo.getJSONObject("data").optJSONArray("propList");
-            if (propList == null) {
-                return;
-            }
-            for (int i = 0; i < propList.length(); i++) {
-                JSONObject prop = propList.getJSONObject(i);
-                String propType = prop.getString("propType");
-                if (!Objects.equals("COLLECT_HISTORY_ANIMAL_7_DAYS", propType)) {
-                    continue;
-                }
-                JSONArray propIdList = prop.getJSONArray("propIdList");
-                String propId = propIdList.getString(0);
-                String propName = prop.getJSONObject("propConfig").getString("propName");
-                jo = new JSONObject(AntDodoRpcCall.consumeProp(propId, propType));
-                if (!MessageUtil.checkResultCode(TAG, jo)) {
-                    return;
-                }
-                JSONObject useResult = jo.getJSONObject("data").getJSONObject("useResult");
-                JSONObject animal = useResult.getJSONObject("animal");
-                String animalInfo = AntDodo.getAnimalInfo(animal);
-                Log.forest("使用道具🎭[" + propName + "]" + animalInfo);
-                Toast.show("已收集历史物种，请在森林日志查看结果！");
-                if (prop.optInt("holdsNum", 1) > 1) {
-                    TimeUtil.sleep(1000L);
-                    usePropCollectHistoryAnimal();
-                    return;
-                }
-            }
-        } catch (Throwable th) {
-            Log.i(TAG, "usePropCollectHistoryAnimal err:");
-            Log.printStackTrace(TAG, th);
-        }
-    }
-
-    private static void collectHistoryAnimal() {
-        if (!canCollectHistoryAnimal()) {
-            Toast.show("没有需要收集的历史物种！");
-            return;
-        }
-        if (AntForestV2.exchangeBenefit("SP20230518000022", "SK20230518000062", "神奇物种抽历史卡机会")) {
-            usePropCollectHistoryAnimal();
-        }
-    }
-
-    private static void setCustomWalkPathId(String pathId) {
-        String userId = UserIdMap.getCurrentUid();
-        if (StringUtil.isEmpty(userId)) {
-            Toast.show("设置自定义路线失败:找不到用户信息");
-            return;
-        }
-        String pathName = "自定义路线关闭";
+    private static void addCustomWalkPathIdList(String pathId) {
         if (!StringUtil.isEmpty(pathId)) {
-            pathName = AntSportsRpcCall.queryPathName(pathId);
+            String pathName = AntSportsRpcCall.queryPathName(pathId);
             if (pathName == null) {
-                Toast.show("设置自定义路线失败:找不到路线信息");
+                Toast.show("添加自定义路线列表失败:找不到路线信息");
                 return;
             }
-        }
-        String userMaskName = UserIdMap.getCurrentMaskName();
-        if (TokenConfig.setCustomWalkPathId(userId, pathId)) {
-            Toast.show("设置自定义路线成功:" + pathName + "-->" + userMaskName);
+            WalkPathIdMap.load();
+            WalkPathIdMap.add(pathId, pathName);
+            WalkPathIdMap.save();
+            Toast.show("添加自定义路线列表成功:" + pathName);
         }
     }
 
@@ -308,18 +209,18 @@ public class ExtendHandle {
         if (!StringUtil.isEmpty(pathId)) {
             String pathName = AntSportsRpcCall.queryPathName(pathId);
             if (pathName == null) {
-                Toast.show("添加待行走路线失败:找不到路线信息");
+                Toast.show("添加待行走路线队列失败:找不到路线信息");
                 return;
             }
             if (TokenConfig.addCustomWalkPathIdQueue(pathId)) {
-                Toast.show("添加待行走路线成功:" + pathName);
+                Toast.show("添加待行走路线队列成功:" + pathName);
             }
         }
     }
 
     private static void clearCustomWalkPathIdQueue() {
         if (TokenConfig.clearCustomWalkPathIdQueue()) {
-            Toast.show("清除待行走路线成功");
+            Toast.show("清除待行走路线队列成功");
         }
     }
 }

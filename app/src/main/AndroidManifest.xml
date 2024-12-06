@@ -62,6 +62,12 @@
         </activity-alias>
 
         <activity
+            android:name="io.github.lazyimmortal.sesame.ui.AlphaActivity"
+            android:resizeableActivity="true"
+            tools:targetApi="n"
+            tools:ignore="MissingClass" />
+
+        <activity
             android:name="io.github.lazyimmortal.sesame.ui.ExtendActivity"
             android:resizeableActivity="true"
             tools:targetApi="n" />

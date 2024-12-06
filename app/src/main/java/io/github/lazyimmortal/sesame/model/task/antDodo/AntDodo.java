@@ -13,6 +13,7 @@ import io.github.lazyimmortal.sesame.entity.AlipayUser;
 import io.github.lazyimmortal.sesame.entity.CustomOption;
 import io.github.lazyimmortal.sesame.model.base.TaskCommon;
 import io.github.lazyimmortal.sesame.model.task.antFarm.AntFarm.TaskStatus;
+import io.github.lazyimmortal.sesame.model.task.antForest.AntForestV2;
 import io.github.lazyimmortal.sesame.util.Log;
 import io.github.lazyimmortal.sesame.util.MessageUtil;
 import io.github.lazyimmortal.sesame.util.Status;
@@ -20,6 +21,7 @@ import io.github.lazyimmortal.sesame.util.TimeUtil;
 import io.github.lazyimmortal.sesame.util.idMap.UserIdMap;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +45,8 @@ public class AntDodo extends ModelTask {
     private ChoiceModelField useUniversalCardBookCollectedStatusType;
     private ChoiceModelField useUniversalCardMedalGenerationStatusType;
     private ChoiceModelField useUniversalCardFantasticLevelType;
-    private BooleanModelField generateBookMedal;
+    private BooleanModelField bookMedal;
+    private SelectModelField bookMedalOptions;
     private ChoiceModelField collectToFriendType;
     private SelectModelField collectToFriendList;
     private BooleanModelField giftToFriend;
@@ -63,7 +66,8 @@ public class AntDodo extends ModelTask {
         modelFields.addField(useUniversalCardBookCollectedStatusType = new ChoiceModelField("useUniversalCardBookCollectedStatusType", "万能卡片 | 图鉴收集状态", BookCollectedStatusType.ALL, BookCollectedStatusType.nickNames));
         modelFields.addField(useUniversalCardMedalGenerationStatusType = new ChoiceModelField("useUniversalCardMedalGenerationStatusType", "万能卡片 | 勋章合成状态", MedalGenerationStatusType.ALL, MedalGenerationStatusType.nickNames));
         modelFields.addField(useUniversalCardFantasticLevelType = new ChoiceModelField("useUniversalCardFantasticLevelType", "万能卡片 | 最低等级", FantasticLevelType.MAGIC, FantasticLevelType.nickNames));
-        modelFields.addField(generateBookMedal = new BooleanModelField("generateBookMedal", "合成勋章", false));
+        modelFields.addField(bookMedal = new BooleanModelField("bookMedal", "图鉴勋章 | 开启", false));
+        modelFields.addField(bookMedalOptions = new SelectModelField("bookMedalOptions", "图鉴勋章 | 选项", new LinkedHashSet<>(), CustomOption::getAntDodoBookMedalOptions));
         modelFields.addField(collectToFriendType = new ChoiceModelField("collectToFriendType", "帮抽卡片 | 动作", CollectToFriendType.NONE, CollectToFriendType.nickNames));
         modelFields.addField(collectToFriendList = new SelectModelField("collectToFriendList", "帮抽卡片 | 好友列表", new LinkedHashSet<>(), AlipayUser::getList));
         modelFields.addField(giftToFriend = new BooleanModelField("giftToFriend", "赠送卡片 | 开启", false));
@@ -91,7 +95,7 @@ public class AntDodo extends ModelTask {
             if (collectToFriendType.getValue() != CollectToFriendType.NONE) {
                 collectToFriend();
             }
-            if (generateBookMedal.getValue()) {
+            if (bookMedal.getValue()) {
                 generateBookMedal();
             }
             if (giftToFriend.getValue()) {
@@ -503,18 +507,27 @@ public class AntDodo extends ModelTask {
                 JSONArray bookForUserList = jo.getJSONArray("bookForUserList");
                 for (int i = 0; i < bookForUserList.length(); i++) {
                     jo = bookForUserList.getJSONObject(i);
-                    if (!MedalGenerationStatus.CAN_GENERATE.name().equals(
-                            jo.optString("medalGenerationStatus"))) {
-                        continue;
+                    MedalGenerationStatus medalGenerationStatus = MedalGenerationStatus.valueOf(
+                            jo.optString("medalGenerationStatus")
+                    );
+                    if (medalGenerationStatus == MedalGenerationStatus.CAN_GENERATE) {
+                        if (bookMedalOptions.getValue().contains("generateBookMedal")) {
+                            JSONObject animalBookResult = jo.getJSONObject("animalBookResult");
+                            String bookId = animalBookResult.getString("bookId");
+                            String ecosystem = animalBookResult.getString("ecosystem");
+                            jo = new JSONObject(AntDodoRpcCall.generateBookMedal(bookId));
+                            if (!MessageUtil.checkResultCode(TAG, jo)) {
+                                break;
+                            }
+                            Log.forest("神奇物种🦕合成勋章[" + ecosystem + "]");
+                        }
+                    } else if (medalGenerationStatus == MedalGenerationStatus.CAN_NOT_GENERATE) {
+                        if (bookMedalOptions.getValue().contains("collectHistoryAnimal") && Objects.equals("END", jo.optString("bookStatus"))) {
+                            if (Status.canVitalityExchangeBenefitToday("SK20230518000062", 1)) {
+                                AntForestV2.exchangeBenefit("SP20230518000022", "SK20230518000062", "神奇物种抽历史卡机会");
+                            }
+                        }
                     }
-                    JSONObject animalBookResult = jo.getJSONObject("animalBookResult");
-                    String bookId = animalBookResult.getString("bookId");
-                    String ecosystem = animalBookResult.getString("ecosystem");
-                    jo = new JSONObject(AntDodoRpcCall.generateBookMedal(bookId));
-                    if (!MessageUtil.checkResultCode(TAG, jo)) {
-                        break;
-                    }
-                    Log.forest("神奇物种🦕合成勋章[" + ecosystem + "]");
                 }
             } while (hasMore);
         } catch (Throwable t) {
@@ -523,7 +536,7 @@ public class AntDodo extends ModelTask {
         }
     }
 
-    public static String getAnimalInfo(JSONObject animal) {
+    private static String getAnimalInfo(JSONObject animal) {
         if (animal == null) {
             return "";
         }

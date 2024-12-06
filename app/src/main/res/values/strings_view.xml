@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="open_with_other_browser">Open with other browser</string>
+    <string name="choose_a_browser">Choose a browser</string>
+    <string name="export_file">Export file</string>
+    <string name="clear_file">Clear file</string>
+    <string name="scroll_to_top">Scroll to top</string>
+    <string name="scroll_to_bottom">Scroll to bottom</string>
+    <string name="copy_the_url">Copy the url</string>
+    <string name="copy_success">Copy success</string>
+</resources>

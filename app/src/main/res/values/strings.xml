@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sesame</string>
     <string name="start_check_energy">Start check energy</string>
-    <string name="start_message">本APP是为了学习研究而开发，<b>免费且开源，禁止用于任何商业用途，并禁止二次修改后闭源发布</b>。请于24小时内卸载本APP。如果您是通过购买获得，请联系卖家退款或在平台举报卖家。</string>
     <color name="color_alpha">#00000000</color>
     <color name="color_btn_down">#F0F0F0</color>
 
-    <string name="hello_user">Hello User!</string>
     <string name="base_configuration">BASE CONFIGURATION</string>
     <string name="immediate_effect">Enable</string>
     <string name="record_log">Record log</string>
@@ -63,24 +60,6 @@
     <string name="koubei">Koubei</string>
     <string name="enable_koubei">Enable Koubei</string>
     <string name="koubei_sign_in">Koubei sign in</string>
-    <string name="more">MORE</string>
-    <string name="forest_log">Forest log</string>
-    <string name="farm_log">Farm log</string>
-    <string name="other_log">Other log</string>
-    <string name="runtime_log">Runtime log</string>
-    <string name="unactivated">UNACTIVATED</string>
-    <string name="tips">Tips</string>
-    <string name="hide_the_application_icon">Hide the application icon</string>
-    <string name="view_error_log_file">View error log file</string>
-    <string name="export_error_log_file">Export error log file</string>
-    <string name="export_runtime_log_file">Export all log file</string>
-    <string name="export_the_statistic_file">Export the statistic file</string>
-    <string name="import_the_statistic_file">Import the statistic file</string>
-    <string name="view_all_log_file">View runtime log file</string>
-    <string name="view_debug">View debug</string>
-    <string name="view_record">View record</string>
-    <string name="extend">Extend options</string>
-    <string name="settings">Settings</string>
     <string name="limit_collect">Limit collect</string>
     <string name="limit_count_per_minute">Limit count per minute</string>
     <string name="energy_rain">Energy Rain</string>
@@ -88,19 +67,6 @@
     <string name="sync_step_count">Sync Step Count</string>
     <string name="use_double_card">Use double card</string>
     <string name="wait_when_exception">Wait when exception(Min)</string>
-    <string name="search">Search</string>
-    <string name="last">Last</string>
-    <string name="next">Next</string>
-    <string name="ok">OK</string>
-    <string name="clear_file">Clear file</string>
-    <string name="open_with_other_browser">Open with other browser</string>
-    <string name="export_file">Export file</string>
-    <string name="copy_the_url">Copy the url</string>
-    <string name="scroll_to_top">Scroll to top</string>
-    <string name="scroll_to_bottom">Scroll to bottom</string>
-    <string name="choose_a_browser">Choose a browser</string>
-    <string name="copy_success">Copy success</string>
-    <string name="cancel">Cancel</string>
     <string name="collect_watering_bubble">Collect watering bubble</string>
     <string name="collect_prop">Collect prop</string>
     <string name="use_double_card_time">Use double card time</string>
@@ -171,9 +137,6 @@
     <string name="total_cert_count">Total cert count</string>
     <string name="send_friend_card">Send friend card</string>
     <string name="batch_rob_energy">Batch rob energy</string>
-    <string name="select_all">Select All</string>
-    <string name="select_invert">Select Invert</string>
-    <string name="close">Close</string>
     <string name="ant_book_read">Ant book Read</string>
     <string name="omegakoi_town">Omegakoi Town</string>
     <string name="consume_gold">Consume Gold</string>

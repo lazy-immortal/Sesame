@@ -15,6 +15,7 @@ import io.github.lazyimmortal.sesame.data.modelFieldExt.IntegerModelField;
 import io.github.lazyimmortal.sesame.data.modelFieldExt.SelectModelField;
 import io.github.lazyimmortal.sesame.data.task.ModelTask;
 import io.github.lazyimmortal.sesame.entity.AlipayUser;
+import io.github.lazyimmortal.sesame.entity.WalkPath;
 import io.github.lazyimmortal.sesame.hook.ApplicationHook;
 import io.github.lazyimmortal.sesame.model.base.TaskCommon;
 import io.github.lazyimmortal.sesame.util.*;
@@ -32,6 +33,7 @@ public class AntSports extends ModelTask {
     private int tmpStepCount = -1;
     private BooleanModelField walk;
     private ChoiceModelField walkPathTheme;
+    private SelectModelField walkCustomPathIdList;
     private BooleanModelField receiveCoinAsset;
     private ChoiceModelField donateCharityCoinType;
     private IntegerModelField donateCharityCoinAmount;
@@ -61,6 +63,7 @@ public class AntSports extends ModelTask {
         ModelFields modelFields = new ModelFields();
         modelFields.addField(walk = new BooleanModelField("walk", "行走路线 | 开启", false));
         modelFields.addField(walkPathTheme = new ChoiceModelField("walkPathTheme", "行走路线 | 路线主题", WalkPathTheme.DA_MEI_ZHONG_GUO, WalkPathTheme.nickNames));
+        modelFields.addField(walkCustomPathIdList = new SelectModelField("walkCustomPathIdList", "行走路线 | 自定义路线列表", new LinkedHashSet<>(), WalkPath::getList));
         modelFields.addField(sportsTasks = new BooleanModelField("sportsTasks", "运动任务", false));
         modelFields.addField(receiveCoinAsset = new BooleanModelField("receiveCoinAsset", "收运动币", false));
         modelFields.addField(donateCharityCoinType = new ChoiceModelField("donateCharityCoinType", "捐运动币 | 方式", DonateCharityCoinType.ZERO, DonateCharityCoinType.nickNames));
@@ -586,7 +589,7 @@ public class AntSports extends ModelTask {
     }
 
     private String queryJoinPathId() {
-        String pathId = TokenConfig.getCustomWalkPathId(UserIdMap.getCurrentUid());
+        String pathId = TokenConfig.getCustomWalkPathId(walkCustomPathIdList.getValue());
         if (pathId != null) {
             return pathId;
         }

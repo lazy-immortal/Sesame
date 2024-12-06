@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="open_with_other_browser">用浏览器打开</string>
+    <string name="choose_a_browser">选择浏览器</string>
+    <string name="export_file">导出文件</string>
+    <string name="clear_file">清空文件</string>
+    <string name="scroll_to_top">跳到顶部</string>
+    <string name="scroll_to_bottom">跳到底部</string>
+    <string name="copy_the_url">复制链接</string>
+    <string name="copy_success">复制成功</string>
+</resources>

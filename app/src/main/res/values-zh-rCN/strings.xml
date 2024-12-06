@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">芝麻粒</string>
-    <string name="start_message">本APP是为了学习研究而开发，<b>免费且开源，禁止用于任何商业用途，并禁止二次修改后闭源发布</b>。请于24小时内卸载本APP。如果您是通过购买获得，请联系卖家退款或在平台举报卖家。</string>
 
     <string name="base_configuration">基础</string>
     <string name="immediate_effect">启用模块</string>
@@ -59,25 +57,6 @@
     <string name="koubei">口碑</string>
     <string name="enable_koubei">开启口碑</string>
     <string name="koubei_sign_in">口碑签到</string>
-    <string name="more">更多</string>
-    <string name="hello_user">你好，旅行者！</string>
-    <string name="forest_log">森林记录</string>
-    <string name="farm_log">庄园记录</string>
-    <string name="other_log">其他记录</string>
-    <string name="runtime_log">运行日志</string>
-    <string name="unactivated">未激活</string>
-    <string name="tips">小贴士</string>
-    <string name="hide_the_application_icon">隐藏图标</string>
-    <string name="view_error_log_file">查看异常日志</string>
-    <string name="export_error_log_file">导出异常日志</string>
-    <string name="export_runtime_log_file">导出运行日志</string>
-    <string name="export_the_statistic_file">导出统计</string>
-    <string name="import_the_statistic_file">导入统计</string>
-    <string name="view_all_log_file">查看运行日志</string>
-    <string name="view_debug">抓包记录</string>
-    <string name="view_record">全部记录</string>
-    <string name="extend">扩展功能</string>
-    <string name="settings">设  置</string>
     <string name="limit_collect">限制收取</string>
     <string name="limit_count_per_minute">限制每分钟收取个数</string>
     <string name="energy_rain">能量雨</string>
@@ -85,19 +64,6 @@
     <string name="sync_step_count">自定义同步步数</string>
     <string name="use_double_card">使用双击卡</string>
     <string name="wait_when_exception">异常等待时间(分钟)</string>
-    <string name="search">搜索</string>
-    <string name="last">上一个</string>
-    <string name="next">下一个</string>
-    <string name="ok">确认</string>
-    <string name="clear_file">清空文件</string>
-    <string name="open_with_other_browser">用浏览器打开</string>
-    <string name="export_file">导出文件</string>
-    <string name="copy_the_url">复制链接</string>
-    <string name="scroll_to_top">跳到顶部</string>
-    <string name="scroll_to_bottom">跳到底部</string>
-    <string name="choose_a_browser">选择浏览器</string>
-    <string name="copy_success">复制成功</string>
-    <string name="cancel">取消</string>
     <string name="start_check_energy">开始检测能量</string>
     <string name="collect_watering_bubble">收金球</string>
     <string name="use_double_card_time">使用双击卡时间</string>
@@ -167,9 +133,6 @@
     <string name="total_cert_count">记录证书总数</string>
     <string name="send_friend_card">送好友卡片(赠送当前图鉴所有卡片)</string>
     <string name="batch_rob_energy">一键收能量</string>
-    <string name="select_all">全选</string>
-    <string name="select_invert">反选</string>
-    <string name="close">关闭</string>
     <string name="ant_book_read">读书听书</string>
     <string name="omegakoi_town">支小镇</string>
     <string name="consume_gold">支付宝消费金</string>

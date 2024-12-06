@@ -262,6 +262,14 @@ public class FileUtil {
         return file;
     }
 
+    public static File getWalkPathIdMapFile() {
+        File file = new File(MAIN_DIRECTORY_FILE, "walkPath.json");
+        if (file.exists() && file.isDirectory()) {
+            file.delete();
+        }
+        return file;
+    }
+
     public static File getExportedStatisticsFile() {
         String storageDirStr = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + CONFIG_DIRECTORY_NAME;
         File storageDir = new File(storageDirStr);
@@ -314,14 +322,6 @@ public class FileUtil {
             }
         }
         return cityCodeFile;
-    }
-
-    public static File getAntDodoPropFile() {
-        File antDodoPropFile = new File(MAIN_DIRECTORY_FILE, "antDodoProp.json");
-        if (antDodoPropFile.exists() && antDodoPropFile.isDirectory()) {
-            antDodoPropFile.delete();
-        }
-        return antDodoPropFile;
     }
 
     public static File getRuntimeLogFile() {

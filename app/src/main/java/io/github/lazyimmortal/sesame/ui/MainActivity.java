@@ -102,9 +102,9 @@ public class MainActivity extends BaseActivity {
             registerReceiver(broadcastReceiver, intentFilter);
         }
         AlertDialog.Builder builder= new AlertDialog.Builder(this);
-        builder.setTitle("提示");
+        builder.setTitle(R.string.tips);
         builder.setMessage(R.string.start_message);
-        builder.setPositiveButton("我知道了",(dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton(R.string.btn_understood, (dialog, which) -> dialog.dismiss());
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -254,13 +254,13 @@ public class MainActivity extends BaseActivity {
                 .setChecked(state > PackageManager.COMPONENT_ENABLED_STATE_ENABLED);
         menu.add(0, 2, 2, R.string.view_error_log_file);
         menu.add(0, 3, 3, R.string.export_error_log_file);
-        menu.add(0, 4, 4, R.string.view_all_log_file);
+        menu.add(0, 4, 4, R.string.view_runtime_log_file);
         menu.add(0, 5, 5, R.string.export_runtime_log_file);
         menu.add(0, 6, 6, R.string.export_the_statistic_file);
         menu.add(0, 7, 7, R.string.import_the_statistic_file);
-        menu.add(0, 8, 8, R.string.view_debug);
-        menu.add(0, 9, 9, R.string.view_record);
-        menu.add(0, 10, 10, R.string.extend);
+        menu.add(0, 8, 8, R.string.view_debug_file);
+        menu.add(0, 9, 9, R.string.view_record_file);
+        menu.add(0, 10, 10, R.string.extend_options);
         menu.add(0, 11, 11, R.string.settings);
         return super.onCreateOptionsMenu(menu);
     }

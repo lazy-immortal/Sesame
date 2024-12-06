@@ -214,7 +214,7 @@ public class AntForestV2 extends ModelTask {
         modelFields.addField(userPatrol = new BooleanModelField("userPatrol", "保护地巡护", false));
         modelFields.addField(combineAnimalPiece = new BooleanModelField("combineAnimalPiece", "合成动物碎片", false));
         modelFields.addField(consumeAnimalProp = new BooleanModelField("consumeAnimalProp", "派遣动物伙伴", false));
-        modelFields.addField(sequenceAnimalProp = new BooleanModelField("sequenceAnimalProp", "动物伙伴顺序", false));
+        modelFields.addField(sequenceAnimalProp = new BooleanModelField("sequenceAnimalProp", "派遣动物伙伴默认顺序", false));
         modelFields.addField(receiveForestTaskAward = new BooleanModelField("receiveForestTaskAward", "森林任务", false));
         modelFields.addField(collectGiftBox = new BooleanModelField("collectGiftBox", "领取礼盒", false));
         modelFields.addField(medicalHealth = new BooleanModelField("medicalHealth", "医疗健康", false));
@@ -2100,16 +2100,22 @@ public class AntForestV2 extends ModelTask {
             }
             JSONArray animalProps = jo.getJSONArray("animalProps");
             JSONObject animalProp = null;
-            for (int i = 0; i < animalProps.length(); i++) {
-                jo = animalProps.getJSONObject(i);
-                if (animalProp == null
-                        || jo.getJSONObject("main").getInt("holdsNum") > animalProp.getJSONObject("main")
-                        .getInt("holdsNum")) {
-                    animalProp = jo;
-                }
-            }
             if (sequenceAnimalProp.getValue()) {
-                animalProp = animalProps.getJSONObject(0);
+                for (int i = 0; i < animalProps.length(); i++) {
+                    animalProp = animalProps.getJSONObject(i);
+                    if (animalProp != null && animalProp.has("main") && animalProp.getJSONObject("main").getInt("holdsNum") > 0) {
+                        break;
+                    }
+                }
+            } else {
+                for (int i = 0; i < animalProps.length(); i++) {
+                    jo = animalProps.getJSONObject(i);
+                    if (animalProp == null || !animalProp.has("main")
+                            || jo.getJSONObject("main").getInt("holdsNum") > animalProp.getJSONObject("main")
+                            .getInt("holdsNum")) {
+                        animalProp = jo;
+                    }
+                }
             }
             consumeAnimalProp(animalProp);
         } catch (Throwable t) {

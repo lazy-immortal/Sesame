@@ -146,6 +146,7 @@ public class AntForestV2 extends ModelTask {
     private BooleanModelField greenLife;
     private BooleanModelField combineAnimalPiece;
     private BooleanModelField consumeAnimalProp;
+    private BooleanModelField sequenceAnimalProp;
     private SelectModelField whoYouWantToGiveTo;
     private BooleanModelField ecoLife;
     private SelectModelField ecoLifeOptions;
@@ -213,6 +214,7 @@ public class AntForestV2 extends ModelTask {
         modelFields.addField(userPatrol = new BooleanModelField("userPatrol", "保护地巡护", false));
         modelFields.addField(combineAnimalPiece = new BooleanModelField("combineAnimalPiece", "合成动物碎片", false));
         modelFields.addField(consumeAnimalProp = new BooleanModelField("consumeAnimalProp", "派遣动物伙伴", false));
+        modelFields.addField(sequenceAnimalProp = new BooleanModelField("sequenceAnimalProp", "动物伙伴顺序", false));
         modelFields.addField(receiveForestTaskAward = new BooleanModelField("receiveForestTaskAward", "森林任务", false));
         modelFields.addField(collectGiftBox = new BooleanModelField("collectGiftBox", "领取礼盒", false));
         modelFields.addField(medicalHealth = new BooleanModelField("medicalHealth", "医疗健康", false));
@@ -2105,6 +2107,9 @@ public class AntForestV2 extends ModelTask {
                         .getInt("holdsNum")) {
                     animalProp = jo;
                 }
+            }
+            if (sequenceAnimalProp.getValue()) {
+                animalProp = animalProps.getJSONObject(0);
             }
             consumeAnimalProp(animalProp);
         } catch (Throwable t) {

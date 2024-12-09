@@ -10,6 +10,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.*;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.github.lazyimmortal.sesame.BuildConfig;
 import io.github.lazyimmortal.sesame.R;
@@ -89,7 +92,7 @@ public class NewSettingsActivity extends BaseActivity {
         if (userName != null) {
             setBaseSubtitle(getString(R.string.settings) + ": " + userName);
         }
-        setBaseSubtitleTextColor(getResources().getColor(R.color.textColorPrimary));
+        setBaseSubtitleTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
 
         context = this;
 

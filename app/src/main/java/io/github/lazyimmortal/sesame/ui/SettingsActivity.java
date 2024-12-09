@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 
+import androidx.core.content.ContextCompat;
+
 import io.github.lazyimmortal.sesame.R;
 import io.github.lazyimmortal.sesame.data.*;
 import io.github.lazyimmortal.sesame.data.modelFieldExt.common.SelectModelFieldFunc;
@@ -74,7 +76,7 @@ public class SettingsActivity extends BaseActivity {
         if (userName != null) {
             setBaseSubtitle(getString(R.string.settings) + ": " + userName);
         }
-        setBaseSubtitleTextColor(getResources().getColor(R.color.textColorPrimary));
+        setBaseSubtitleTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
 
         context = this;
         tabHost = findViewById(R.id.tab_settings);

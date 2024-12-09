@@ -82,6 +82,25 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btn_clear_dish_image"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_extend"
+                android:text="@string/clear_dish_image"
+                android:textColor="@color/button_text" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="?android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <Button
                 android:id="@+id/btn_set_custom_walk_path_id_list"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"

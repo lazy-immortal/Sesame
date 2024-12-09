@@ -15,6 +15,7 @@
 
     <color name="colorPrimary">#216EEE</color>
     <color name="textColorPrimary">#FFFFFF</color>
+    <color name="textColorDisable">#333333</color>
     <color name="navigationBarColor">#AA000000</color>
 
 </resources>

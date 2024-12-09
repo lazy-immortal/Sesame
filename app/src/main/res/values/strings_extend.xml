@@ -4,6 +4,7 @@
     <string name="get_newTree_items">Get newTree items🌱</string>
     <string name="query_area_trees">Query unlock area🗺️</string>
     <string name="get_unlock_treeItems">Query unlock item🐘</string>
+    <string name="clear_dish_image">Clear dish image💿</string>
     <string name="set_custom_walk_path_id_list">Set custom walk pathId list🚶🏻‍♂️</string>
     <string name="set_custom_walk_path_id_queue">Set custom walk pathId queue🚶🏻‍♂️</string>
     <string name="developer_mode">Developer mode💻</string>

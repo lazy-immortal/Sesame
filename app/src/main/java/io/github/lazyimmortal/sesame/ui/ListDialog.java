@@ -4,13 +4,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.graphics.Color;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
+
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+
 import io.github.lazyimmortal.sesame.R;
 import io.github.lazyimmortal.sesame.data.modelFieldExt.SelectAndCountModelField;
 import io.github.lazyimmortal.sesame.data.modelFieldExt.SelectAndCountOneModelField;
@@ -103,7 +105,7 @@ public class ListDialog {
         listDialog.show();
          Button positiveButton = listDialog.getButton(DialogInterface.BUTTON_POSITIVE);
         if (positiveButton != null) {
-            positiveButton.setTextColor(Color.parseColor("#216EEE")); // 设置按钮颜色为红色
+            positiveButton.setTextColor(ContextCompat.getColor(c, R.color.button));
         }
     }
 

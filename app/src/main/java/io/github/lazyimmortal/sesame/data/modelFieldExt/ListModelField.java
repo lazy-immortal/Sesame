@@ -1,12 +1,14 @@
 package io.github.lazyimmortal.sesame.data.modelFieldExt;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import androidx.core.content.ContextCompat;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.github.lazyimmortal.sesame.R;
 import io.github.lazyimmortal.sesame.data.ModelField;
@@ -34,8 +36,8 @@ public class ListModelField extends ModelField<List<String>> {
         Button btn = new Button(context);
         btn.setText(getName());
         btn.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        btn.setTextColor(Color.parseColor("#216EEE"));
-        btn.setBackground(context.getResources().getDrawable(R.drawable.button));
+        btn.setTextColor(ContextCompat.getColor(context, R.color.button));
+        btn.setBackground(ContextCompat.getDrawable(context, R.drawable.button));
         btn.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
         btn.setMinHeight(150);
         btn.setMaxHeight(180);

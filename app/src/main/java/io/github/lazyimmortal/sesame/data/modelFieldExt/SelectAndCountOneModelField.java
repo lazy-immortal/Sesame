@@ -1,12 +1,14 @@
 package io.github.lazyimmortal.sesame.data.modelFieldExt;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import androidx.core.content.ContextCompat;
+
 import io.github.lazyimmortal.sesame.R;
 import io.github.lazyimmortal.sesame.data.ModelField;
 import io.github.lazyimmortal.sesame.data.modelFieldExt.common.SelectModelFieldFunc;
@@ -47,8 +49,8 @@ public class SelectAndCountOneModelField extends ModelField<KVNode<String, Integ
         Button btn = new Button(context);
         btn.setText(getName());
         btn.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        btn.setTextColor(Color.parseColor("#216EEE"));
-        btn.setBackground(context.getResources().getDrawable(R.drawable.button));
+        btn.setTextColor(ContextCompat.getColor(context, R.color.button));
+        btn.setBackground(ContextCompat.getDrawable(context, R.drawable.button));
         btn.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
         btn.setMinHeight(150);
         btn.setPaddingRelative(40, 0, 40, 0);

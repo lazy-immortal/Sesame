@@ -4,6 +4,7 @@
     <string name="get_newTree_items">查询树苗上新🌱</string>
     <string name="query_area_trees">查询未解锁地区🗺️</string>
     <string name="get_unlock_treeItems">查询未解锁项目🐘</string>
+    <string name="clear_dish_image">清空光盘行动图片💿</string>
     <string name="set_custom_walk_path_id_list">自定义路线列表🚶🏻‍♂️</string>
     <string name="set_custom_walk_path_id_queue">待行走路线队列🚶🏻‍♂️</string>
     <string name="developer_mode">开发者模式💻</string>

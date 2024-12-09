@@ -16,6 +16,17 @@ public class MessageUtil {
         return null;
     }
 
+    public static void printErrorMessage(String tag, JSONObject jo, String errorMessageField) {
+        try {
+            String errMsg = tag + " error:";
+            Log.record(errMsg + jo.getString(errorMessageField));
+            Log.i(jo.getString(errorMessageField), jo.toString());
+        } catch (Throwable t) {
+            Log.i(TAG, "printErrorMessage err:");
+            Log.printStackTrace(TAG, t);
+        }
+    }
+
     public static Boolean checkMemo(JSONObject jo) {
         return checkMemo(UNKNOWN_TAG, jo);
     }
@@ -24,8 +35,7 @@ public class MessageUtil {
         try {
             if (!"SUCCESS".equals(jo.optString("memo"))) {
                 if (jo.has("memo")) {
-                    Log.record(jo.getString("memo"));
-                    Log.i(jo.getString("memo"), jo.toString());
+                    printErrorMessage(tag, jo, "memo");
                 } else {
                     Log.i(tag, jo.toString());
                 }
@@ -64,13 +74,10 @@ public class MessageUtil {
         try {
             String resultCode = jo.optString("resultCode");
             if (!resultCode.equalsIgnoreCase("SUCCESS") && !resultCode.equals("100")) {
-                Log.record(tag + " error:");
                 if (jo.has("resultDesc")) {
-                    Log.record(jo.getString("resultDesc"));
-                    Log.i(jo.getString("resultDesc"), jo.toString());
+                    printErrorMessage(tag, jo, "resultDesc");
                 } else if (jo.has("resultView")) {
-                    Log.record(jo.getString("resultView"));
-                    Log.i(jo.getString("resultView"), jo.toString());
+                    printErrorMessage(tag, jo, "resultView");
                 } else {
                     Log.i(tag, jo.toString());
                 }
@@ -89,8 +96,7 @@ public class MessageUtil {
             int resultCode = jo.optInt("resultCode");
             if (resultCode != 200) {
                 if (jo.has("resultMsg")) {
-                    Log.record(jo.getString("resultMsg"));
-                    Log.i(jo.getString("resultMsg"), jo.toString());
+                    printErrorMessage(tag, jo, "resultMsg");
                 } else {
                     Log.i(tag, jo.toString());
                 }
@@ -112,20 +118,15 @@ public class MessageUtil {
         try {
             if (!jo.optBoolean("success") && !jo.optBoolean("isSuccess")) {
                 if (jo.has("errorMsg")) {
-                    Log.record(jo.getString("errorMsg"));
-                    Log.i(jo.getString("errorMsg"), jo.toString());
+                    printErrorMessage(tag, jo, "errorMsg");
                 } else if (jo.has("errorMessage")) {
-                    Log.record(jo.getString("errorMessage"));
-                    Log.i(jo.getString("errorMessage"), jo.toString());
+                    printErrorMessage(tag, jo, "errorMessage");
                 } else if (jo.has("desc")) {
-                    Log.record(jo.getString("desc"));
-                    Log.i(jo.getString("desc"), jo.toString());
+                    printErrorMessage(tag, jo, "desc");
                 } else if (jo.has("resultDesc")) {
-                    Log.record(jo.getString("resultDesc"));
-                    Log.i(jo.getString("resultDesc"), jo.toString());
+                    printErrorMessage(tag, jo, "resultDesc");
                 } else if (jo.has("resultView")) {
-                    Log.record(jo.getString("resultView"));
-                    Log.i(jo.getString("resultView"), jo.toString());
+                    printErrorMessage(tag, jo, "resultView");
                 } else {
                     Log.i(tag, jo.toString());
                 }

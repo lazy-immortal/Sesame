@@ -18,6 +18,8 @@ public class ModelFieldShowDto implements Serializable {
 
     private String configValue;
 
+    private String description;
+
     public ModelFieldShowDto() {
     }
 
@@ -28,6 +30,7 @@ public class ModelFieldShowDto implements Serializable {
         dto.setType(modelField.getType());
         dto.setExpandKey(modelField.getExpandKey());
         dto.setConfigValue(modelField.getConfigValue());
+        dto.setDescription(modelField.getDescription());
         return dto;
     }
 

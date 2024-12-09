@@ -3,7 +3,6 @@ package io.github.lazyimmortal.sesame.ui;
 import android.annotation.SuppressLint;
 import android.content.*;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +13,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+
 import io.github.lazyimmortal.sesame.R;
 import io.github.lazyimmortal.sesame.data.AppConfig;
 import io.github.lazyimmortal.sesame.data.RunType;
@@ -109,7 +111,7 @@ public class MainActivity extends BaseActivity {
         alertDialog.show();
         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
         if (positiveButton != null) {
-            positiveButton.setTextColor(Color.parseColor("#216EEE")); // 设置按钮颜色为红色
+            positiveButton.setTextColor(ContextCompat.getColor(this, R.color.button));
         }
     }
 
@@ -369,7 +371,7 @@ public class MainActivity extends BaseActivity {
         // 在 AlertDialog 显示之后获取返回按钮并设置颜色
         Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
         if (positiveButton != null) {
-            positiveButton.setTextColor(Color.parseColor("#216EEE")); // 设置按钮颜色为红色
+            positiveButton.setTextColor(ContextCompat.getColor(this, R.color.button));
         }
         int length = userNameArray.length;
         if (length > 0 && length < 3) {
@@ -400,13 +402,11 @@ public class MainActivity extends BaseActivity {
         setBaseTitle(ViewAppInfo.getAppTitle() + "【" + runType.getName() + "】");
         switch (runType) {
             case DISABLE:
-                setBaseTitleTextColor(Color.parseColor("#333333"));
+                setBaseTitleTextColor(ContextCompat.getColor(this, R.color.textColorDisable));
                 break;
             case MODEL:
-                setBaseTitleTextColor(getResources().getColor(R.color.textColorPrimary));
-                break;
             case PACKAGE:
-                setBaseTitleTextColor(getResources().getColor(R.color.textColorPrimary));
+                setBaseTitleTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
                 break;
         }
     }

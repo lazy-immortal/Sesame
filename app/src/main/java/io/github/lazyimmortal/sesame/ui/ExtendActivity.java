@@ -30,6 +30,7 @@ public class ExtendActivity extends BaseActivity {
         btnGetNewTreeItems = findViewById(R.id.btn_get_newTree_items);
         btnQueryAreaTrees = findViewById(R.id.btn_query_area_trees);
         btnGetUnlockTreeItems = findViewById(R.id.btn_get_unlock_treeItems);
+        btnClearDishImage = findViewById(R.id.btn_clear_dish_image);
         btnSetCustomWalkPathId = findViewById(R.id.btn_set_custom_walk_path_id_list);
         btnSetCustomWalkPathIdQueue = findViewById(R.id.btn_set_custom_walk_path_id_queue);
         btnDeveloperMode = findViewById(R.id.btn_developer_mode);

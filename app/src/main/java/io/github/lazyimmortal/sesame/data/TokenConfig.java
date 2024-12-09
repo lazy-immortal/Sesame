@@ -131,6 +131,11 @@ public class TokenConfig {
         }
     }
 
+    public static Boolean clearDishImage() {
+        TokenConfig.INSTANCE.dishImageList.clear();
+        return save();
+    }
+
     public static Boolean checkDishImage(Map<String, String> dishImage) {
         if (dishImage == null) {
             return false;

@@ -11,11 +11,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import io.github.lazyimmortal.sesame.R;
+import io.github.lazyimmortal.sesame.data.TokenConfig;
 
 public class ExtendActivity extends BaseActivity {
 
     Button btnGetTreeItems, btnGetNewTreeItems;
     Button btnQueryAreaTrees, btnGetUnlockTreeItems;
+    Button btnClearDishImage;
     Button btnSetCustomWalkPathId, btnSetCustomWalkPathIdQueue;
     Button btnDeveloperMode;
 
@@ -62,6 +64,12 @@ public class ExtendActivity extends BaseActivity {
             public void onClick(View view) {
                 sendItemsBroadcast("getUnlockTreeItems", "", "");
                 Toast.makeText(ExtendActivity.this, "已发送查询请求，请在森林日志查看结果！", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnClearDishImage.setOnClickListener(view -> {
+            if (TokenConfig.clearDishImage()) {
+                Toast.makeText(ExtendActivity.this, "存储的光盘行动图片已清空！", Toast.LENGTH_SHORT).show();
             }
         });
 

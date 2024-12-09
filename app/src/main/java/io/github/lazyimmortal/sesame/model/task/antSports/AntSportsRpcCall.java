@@ -127,7 +127,7 @@ public class AntSportsRpcCall {
     public static String queryPathName(String pathId) {
         try {
             JSONObject jo = new JSONObject(queryPath(Log.getFormatDate(), pathId));
-            if (MessageUtil.checkSuccess(jo)) {
+            if (MessageUtil.checkSuccess("queryPathName", jo)) {
                 jo = jo.getJSONObject("data").getJSONObject("path");
                 return jo.getString("name");
             }

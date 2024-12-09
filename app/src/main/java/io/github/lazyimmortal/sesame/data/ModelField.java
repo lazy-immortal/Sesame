@@ -33,6 +33,9 @@ public class ModelField<T> implements Serializable {
     private String name;
 
     @JsonIgnore
+    private String description;
+
+    @JsonIgnore
     protected T defaultValue;
 
     protected volatile T value;
@@ -50,6 +53,16 @@ public class ModelField<T> implements Serializable {
         this.code = code;
         this.name = name;
         this.defaultValue = value;
+        this.description = null;
+        setObjectValue(value);
+    }
+
+    public ModelField(String code, String name, T value, String description) {
+        this();
+        this.code = code;
+        this.name = name;
+        this.defaultValue = value;
+        this.description = description;
         setObjectValue(value);
     }
 

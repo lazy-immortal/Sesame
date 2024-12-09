@@ -40,6 +40,16 @@ public class SelectAndCountModelField extends ModelField<Map<String, Integer>> i
         this.selectListFunc = selectListFunc;
     }
 
+    public SelectAndCountModelField(String code, String name, Map<String, Integer> value, List<? extends IdAndName> expandValue, String description) {
+        super(code, name, value, description);
+        this.expandValue = expandValue;
+    }
+
+    public SelectAndCountModelField(String code, String name, Map<String, Integer> value, SelectListFunc selectListFunc, String description) {
+        super(code, name, value, description);
+        this.selectListFunc = selectListFunc;
+    }
+
     @Override
     public String getType() {
         return "SELECT_AND_COUNT";

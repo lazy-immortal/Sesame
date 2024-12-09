@@ -35,16 +35,6 @@ public class SelectAndCountOneModelField extends ModelField<KVNode<String, Integ
         this.selectListFunc = selectListFunc;
     }
 
-    public SelectAndCountOneModelField(String code, String name, KVNode<String, Integer> value, List<? extends IdAndName> expandValue, String description) {
-        super(code, name, value, description);
-        this.expandValue = expandValue;
-    }
-
-    public SelectAndCountOneModelField(String code, String name, KVNode<String, Integer> value, SelectListFunc selectListFunc, String description) {
-        super(code, name, value, description);
-        this.selectListFunc = selectListFunc;
-    }
-
     @Override
     public String getType() {
         return "SELECT_AND_COUNT_ONE";

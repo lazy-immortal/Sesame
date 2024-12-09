@@ -40,6 +40,16 @@ public class SelectModelField extends ModelField<Set<String>> implements SelectM
         this.selectListFunc = selectListFunc;
     }
 
+    public SelectModelField(String code, String name, Set<String> value, List<? extends IdAndName> expandValue, String description) {
+        super(code, name, value, description);
+        this.expandValue = expandValue;
+    }
+
+    public SelectModelField(String code, String name, Set<String> value, SelectListFunc selectListFunc, String description) {
+        super(code, name, value, description);
+        this.selectListFunc = selectListFunc;
+    }
+
     @Override
     public String getType() {
         return "SELECT";

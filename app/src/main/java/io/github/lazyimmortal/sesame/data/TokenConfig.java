@@ -132,6 +132,7 @@ public class TokenConfig {
     }
 
     public static Boolean clearDishImage() {
+        load();
         TokenConfig.INSTANCE.dishImageList.clear();
         return save();
     }

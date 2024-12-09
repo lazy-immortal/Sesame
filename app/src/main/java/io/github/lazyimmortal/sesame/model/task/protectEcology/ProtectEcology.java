@@ -66,13 +66,13 @@ public class ProtectEcology extends ModelTask {
         modelFields.addField(protectMarathonList = new SelectAndCountModelField("protectMarathonList", "碳中和 | 马拉松列表", new LinkedHashMap<>(), AlipayMarathon::getList, "提示:请填写助力克数总量"));
         modelFields.addField(protectNewAncientTreeType = new ChoiceModelField("protectNewAncientTreeType", "碳中和 | 古树医生", ProtectType.NONE, ProtectType.nickNames));
         modelFields.addField(protectNewAncientTreeList = new SelectAndCountModelField("protectNewAncientTreeList", "碳中和 | 古树医生列表", new LinkedHashMap<>(), AlipayNewAncientTree::getList, "提示:请填写助力克数总量"));
-        modelFields.addField(protectTree = new BooleanModelField("protectTree", "保护森林 | 植树(总数)", false));
+        modelFields.addField(protectTree = new BooleanModelField("protectTree", "保护森林 | 植树", false));
         modelFields.addField(protectTreeList = new SelectAndCountModelField("protectTreeList", "保护森林 | 植树列表", new LinkedHashMap<>(), AlipayTree::getList, "提示:请填写保护次数总量"));
         modelFields.addField(protectReserve = new BooleanModelField("protectReserve", "保护动物 | 保护地", false));
         modelFields.addField(protectReserveList = new SelectAndCountModelField("reserveList", "保护动物 | 保护地列表", new LinkedHashMap<>(), AlipayReserve::getList, "提示:请填写每日保护次数"));
         modelFields.addField(protectAnimal = new BooleanModelField("protectAnimal", "保护动物 | 护林员", false));
         modelFields.addField(protectAnimalList = new SelectModelField("protectAnimalList", "保护动物 | 护林员列表", new HashSet<>(), AlipayAnimal::getList, "提示:请选择需要点亮的护林员，可能需要保护多次"));
-        modelFields.addField(protectBeach = new BooleanModelField("protectBeach", "保护海洋 | 海滩(总数)", false));
+        modelFields.addField(protectBeach = new BooleanModelField("protectBeach", "保护海洋 | 海滩", false));
         modelFields.addField(protectBeachList = new SelectAndCountModelField("protectOceanList", "保护海洋 | 海滩列表", new LinkedHashMap<>(), AlipayBeach::getList, "提示:请填写保护次数总量"));
         return modelFields;
     }

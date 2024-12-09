@@ -125,6 +125,7 @@ public class AntForestV2 extends ModelTask {
     private BooleanModelField doubleCardConstant;
     private BooleanModelField doubleCardOnlyLimitTime;
     private BooleanModelField stealthCard;
+    private ChoiceModelField stealthCardType;
     private BooleanModelField stealthCardConstant;
     private ChoiceModelField bubbleBoostType;
     private StringModelField bubbleBoostTime;
@@ -152,9 +153,9 @@ public class AntForestV2 extends ModelTask {
     private BooleanModelField dress;
     private TextModelField dressDetailList;
 
-    private int totalCollected = 0;
-    private int totalHelpCollected = 0;
-    private boolean hasErrorWait = false;
+    private static int totalCollected = 0;
+    private static int totalHelpCollected = 0;
+    private static boolean hasErrorWait = false;
 
     @Getter
     private Set<String> dontCollectMap = new HashSet<>();
@@ -191,6 +192,7 @@ public class AntForestV2 extends ModelTask {
         modelFields.addField(stealthCard = new BooleanModelField("stealthCard", "隐身卡 | 使用", false));
         modelFields.addField(stealthCardConstant = new BooleanModelField("stealthCardConstant", "隐身卡 | 限时隐身永动机", false));
         if (ExtendHandle.handleAlphaRequest("enableDeveloperMode")) {
+            modelFields.addField(stealthCardType = new ChoiceModelField("stealthCardType", "隐身卡 | 接力使用", UsePropType.CLOSE, UsePropType.nickNames));
             modelFields.addField(bubbleBoostType = new ChoiceModelField("bubbleBoostType", "加速器 | 定时使用", UsePropType.CLOSE, UsePropType.nickNames));
             modelFields.addField(bubbleBoostTime = new StringModelField("bubbleBoostTime", "加速器 | 定时使用时间", "0630"));
             modelFields.addField(energyShieldType = new ChoiceModelField("energyShieldType", "保护罩 | 接力使用", UsePropType.CLOSE, UsePropType.nickNames));
@@ -1387,6 +1389,12 @@ public class AntForestV2 extends ModelTask {
                 return;
             }
             JSONObject jo = new JSONObject();
+            jo.put("stealthCard",
+                    new JSONObject()
+                            .put("stealthCardType", stealthCardType.getValue())
+                            .put("stealthCardConstant", stealthCardConstant.getValue())
+                            .put("stealthCardTime", usingProps.get(PropGroup.stealthCard.name()))
+            );
             jo.put("bubbleBoost",
                     new JSONObject()
                             .put("bubbleBoostType", bubbleBoostType.getValue())
